@@ -1,661 +1,2751 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Pixel Tale - The Skull and The Hare</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            background: #0a0a0a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Press Start 2P', cursive;
-            overflow: hidden;
-            cursor: none;
-        }
+<title>Dark Pixel Tale - The Skull & The Hare</title>
 
-        #game-container {
-            position: relative;
-            width: 800px;
-            height: 500px;
-            background: #1a1a2e;
-            border: 4px solid #4a4a4a;
-            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
-            overflow: hidden;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        #story-text {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #ff4444;
-            font-size: 12px;
-            text-shadow: 2px 2px #000;
-            text-align: center;
-            width: 90%;
-            z-index: 10;
-            pointer-events: none;
-        }
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050507;
+}
 
-        #title-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            cursor: pointer;
-        }
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Press Start 2P', monospace;
+    cursor: none;
+}
 
-        #title-screen h1 {
-            color: #ff0000;
-            font-size: 32px;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 0 0 20px #ff0000;
-            animation: titleGlow 2s infinite;
-        }
+#game-container {
+    position: relative;
+    width: min(96vw, 1100px);
+    aspect-ratio: 16 / 10;
+    background: #080810;
+    overflow: hidden;
 
-        #title-screen p {
-            color: #888;
-            font-size: 14px;
-            animation: blink 1s infinite;
-        }
+    border: 4px solid #30303a;
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
+    box-shadow:
+        0 0 0 2px #080808,
+        0 0 35px rgba(255, 0, 0, .18),
+        inset 0 0 60px rgba(0,0,0,.8);
+}
 
-        @keyframes titleGlow {
-            0%, 100% { text-shadow: 0 0 20px #ff0000; }
-            50% { text-shadow: 0 0 40px #ff0000, 0 0 60px #ff0000; }
-        }
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
 
-        #moral {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ff0000;
-            font-size: 16px;
-            text-align: center;
-            z-index: 15;
-            display: none;
-            text-shadow: 0 0 20px #ff0000;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border: 2px solid #ff0000;
-            animation: glow 2s infinite;
-            cursor: pointer;
-        }
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
 
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px #ff0000; }
-            50% { box-shadow: 0 0 40px #ff0000; }
-        }
+/* --------------------------------------------------
+   TITLE
+-------------------------------------------------- */
 
-        #music-toggle {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 25;
-            background: #333;
-            color: #fff;
-            border: 2px solid #666;
-            padding: 5px 10px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            cursor: pointer;
-        }
+#title-screen {
+    position: absolute;
+    inset: 0;
 
-        #music-toggle:hover {
-            background: #444;
-        }
-    </style>
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(45,0,0,.35),
+            rgba(0,0,0,.97) 70%
+        );
+
+    z-index: 50;
+}
+
+#title-screen h1 {
+    text-align: center;
+
+    color: #e00000;
+
+    font-size: clamp(18px, 3vw, 34px);
+    line-height: 1.7;
+
+    text-shadow:
+        3px 3px 0 #280000,
+        0 0 12px #ff0000,
+        0 0 35px rgba(255,0,0,.8);
+
+    animation: titlePulse 2.5s infinite;
+}
+
+#title-screen .subtitle {
+    margin-top: 22px;
+
+    color: #777;
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+#title-screen .start {
+    margin-top: 40px;
+
+    color: #eee;
+    font-size: 12px;
+
+    animation: blink 1s steps(2) infinite;
+}
+
+#title-screen .controls {
+    margin-top: 25px;
+
+    color: #444;
+    font-size: 7px;
+}
+
+/* --------------------------------------------------
+   STORY UI
+-------------------------------------------------- */
+
+#story-box {
+    position: absolute;
+
+    left: 5%;
+    right: 5%;
+    bottom: 20px;
+
+    min-height: 65px;
+
+    padding: 14px 20px;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,.88),
+            rgba(5,5,10,.92)
+        );
+
+    border:
+        2px solid rgba(150,150,150,.25);
+
+    box-shadow:
+        0 0 15px rgba(0,0,0,.8),
+        inset 0 0 15px rgba(255,0,0,.04);
+
+    z-index: 20;
+}
+
+#story-text {
+    color: #ddd;
+
+    font-size: clamp(7px, 1vw, 11px);
+    line-height: 1.8;
+
+    text-align: center;
+
+    text-shadow:
+        2px 2px #000;
+
+    min-height: 25px;
+}
+
+#scene-counter {
+    position: absolute;
+
+    top: 10px;
+    left: 12px;
+
+    color: #555;
+    font-size: 6px;
+
+    z-index: 21;
+}
+
+/* --------------------------------------------------
+   MUSIC
+-------------------------------------------------- */
+
+#music-toggle {
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    z-index: 60;
+
+    background: rgba(5,5,8,.85);
+
+    color: #aaa;
+
+    border: 1px solid #444;
+
+    padding: 8px 10px;
+
+    font-family: 'Press Start 2P', monospace;
+
+    font-size: 7px;
+
+    cursor: pointer;
+}
+
+#music-toggle:hover {
+    color: #fff;
+    border-color: #888;
+}
+
+/* --------------------------------------------------
+   MORAL
+-------------------------------------------------- */
+
+#moral {
+    position: absolute;
+
+    inset: 0;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column;
+
+    z-index: 45;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(50,0,0,.45),
+            rgba(0,0,0,.97)
+        );
+
+    text-align: center;
+
+    color: #e00000;
+
+    font-size: clamp(10px, 1.5vw, 17px);
+
+    line-height: 2;
+
+    text-shadow:
+        0 0 10px #f00,
+        0 0 30px #700;
+}
+
+#moral .restart {
+    margin-top: 30px;
+
+    color: #777;
+
+    font-size: 8px;
+
+    animation: blink 1.2s steps(2) infinite;
+}
+
+/* --------------------------------------------------
+   ANIMATIONS
+-------------------------------------------------- */
+
+@keyframes blink {
+    0%, 45% {
+        opacity: 1;
+    }
+
+    46%, 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes titlePulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.025);
+        filter: brightness(1.35);
+    }
+}
+</style>
 </head>
+
 <body>
-    <div id="game-container">
-        <canvas id="gameCanvas"></canvas>
-        <div id="story-text">Loading...</div>
-        <div id="moral"></div>
-        <button id="music-toggle">MUSIC: ON</button>
-        <div id="title-screen">
-            <h1>DARK PIXEL TALE<br>THE SKULL & THE HARE</h1>
-            <p>CLICK TO BEGIN</p>
+
+<div id="game-container">
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="scene-counter">
+        SCENE 01
+    </div>
+
+    <div id="story-box">
+        <div id="story-text">
+            Loading...
         </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const storyText = document.getElementById('story-text');
-        const titleScreen = document.getElementById('title-screen');
-        const moralDiv = document.getElementById('moral');
-        const musicToggle = document.getElementById('music-toggle');
+    <button id="music-toggle">
+        MUSIC: ON
+    </button>
 
-        // Canvas size
-        canvas.width = 800;
-        canvas.height = 500;
+    <div id="moral">
 
-        // Game state
-        let gameStarted = false;
-        let gameTime = 0;
-        let storyPhase = 0;
-        let skullX = 50;
-        let hareX = 50;
-        let raceProgress = 0;
-        let hareSleeping = false;
-        let hareKilled = false;
-        let moralShown = false;
-        let musicOn = true;
-        let cameraZoom = false;
-        let zoomTimer = 0;
+        <div>
+            MORAL OF THE STORY:
+            <br><br>
+            DON'T TRUST EVEN YOURSELF.
+            <br>
+            THE DARKNESS LIES WITHIN US ALL.
+        </div>
 
-        // Audio context for chip music
-        let audioCtx = null;
-        let musicInterval = null;
+        <div class="restart">
+            CLICK TO RESTART
+        </div>
 
-        // Character definitions
-        class Skull {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.width = 30;
-                this.height = 35;
-                this.animationFrame = 0;
-                this.animationTimer = 0;
-                this.jumping = false;
-                this.jumpHeight = 0;
+    </div>
+
+    <div id="title-screen">
+
+        <h1>
+            DARK PIXEL TALE
+            <br>
+            THE SKULL & THE HARE
+        </h1>
+
+        <div class="subtitle">
+            A DARK FAIRY TALE
+        </div>
+
+        <div class="start">
+            CLICK TO BEGIN
+        </div>
+
+        <div class="controls">
+            MUSIC • PIXEL ART • CINEMATIC STORY
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = 960;
+canvas.height = 600;
+
+ctx.imageSmoothingEnabled = false;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const titleScreen = document.getElementById("title-screen");
+const storyText = document.getElementById("story-text");
+const sceneCounter = document.getElementById("scene-counter");
+const moral = document.getElementById("moral");
+const musicToggle = document.getElementById("music-toggle");
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let gameStarted = false;
+
+let sceneIndex = 0;
+
+let sceneTimer = 0;
+
+let lastTime = 0;
+
+let cameraX = 0;
+let cameraZoom = 1;
+
+let screenShake = 0;
+
+let fade = 1;
+
+let hareKilled = false;
+
+let moralShown = false;
+
+let musicOn = true;
+
+
+/* =========================================================
+   CHARACTERS
+========================================================= */
+
+const skull = {
+    x: 90,
+    y: 390,
+
+    targetX: 90,
+
+    walkFrame: 0,
+
+    walkTimer: 0,
+
+    jump: 0,
+
+    attack: 0
+};
+
+const hare = {
+    x: 100,
+    y: 390,
+
+    targetX: 100,
+
+    walkFrame: 0,
+
+    walkTimer: 0,
+
+    sleeping: false,
+
+    headless: false,
+
+    blink: 0
+};
+
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+const particles = [];
+
+function createParticle(x, y, type = "dust") {
+
+    particles.push({
+        x,
+        y,
+
+        vx: (Math.random() - .5) * 1.5,
+
+        vy: type === "blood"
+            ? Math.random() * -2 - .5
+            : Math.random() * -.5,
+
+        life: 1,
+
+        size: Math.random() < .7 ? 2 : 3,
+
+        type
+    });
+}
+
+
+function updateParticles(dt) {
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+
+        const p = particles[i];
+
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+
+        if (p.type === "dust") {
+            p.vy += .01 * dt;
+        }
+
+        if (p.type === "blood") {
+            p.vy += .04 * dt;
+        }
+
+        p.life -= .015 * dt;
+
+        if (p.life <= 0) {
+            particles.splice(i, 1);
+        }
+    }
+}
+
+
+function drawParticles() {
+
+    for (const p of particles) {
+
+        ctx.globalAlpha = p.life;
+
+        if (p.type === "blood") {
+            ctx.fillStyle = "#b00000";
+        } else {
+            ctx.fillStyle = "#555";
+        }
+
+        ctx.fillRect(
+            Math.floor(p.x),
+            Math.floor(p.y),
+            p.size,
+            p.size
+        );
+    }
+
+    ctx.globalAlpha = 1;
+}
+
+
+/* =========================================================
+   PIXEL HELPERS
+========================================================= */
+
+function rect(x, y, w, h, color) {
+
+    ctx.fillStyle = color;
+
+    ctx.fillRect(
+        Math.floor(x),
+        Math.floor(y),
+        Math.floor(w),
+        Math.floor(h)
+    );
+}
+
+
+function pixelCircle(cx, cy, radius, color) {
+
+    ctx.fillStyle = color;
+
+    for (let y = -radius; y <= radius; y += 3) {
+
+        for (let x = -radius; x <= radius; x += 3) {
+
+            if (x*x + y*y <= radius*radius) {
+
+                ctx.fillRect(
+                    Math.floor(cx + x),
+                    Math.floor(cy + y),
+                    3,
+                    3
+                );
             }
+        }
+    }
+}
 
-            draw(zoom = false) {
-                const x = this.x;
-                const y = this.y - this.jumpHeight;
-                const scale = zoom ? 2 : 1;
-                
-                ctx.save();
-                if (zoom) {
-                    ctx.translate(-x * (scale - 1), -y * (scale - 1));
-                    ctx.scale(scale, scale);
+
+/* =========================================================
+   SKY
+========================================================= */
+
+function drawSky() {
+
+    const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        0,
+        canvas.height
+    );
+
+    gradient.addColorStop(0, "#03030d");
+    gradient.addColorStop(.45, "#101027");
+    gradient.addColorStop(1, "#1c1720");
+
+    ctx.fillStyle = gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+}
+
+
+/* =========================================================
+   STARS
+========================================================= */
+
+function drawStars() {
+
+    const seed = 1234;
+
+    for (let i = 0; i < 80; i++) {
+
+        const x =
+            ((i * 173 + seed) % 1200)
+            - cameraX * .1;
+
+        const y =
+            (i * 71) % 260;
+
+        const size =
+            i % 7 === 0 ? 2 : 1;
+
+        rect(
+            ((x % canvas.width) + canvas.width) % canvas.width,
+            y,
+            size,
+            size,
+            i % 9 === 0 ? "#777" : "#454550"
+        );
+    }
+}
+
+
+/* =========================================================
+   MOON
+========================================================= */
+
+function drawMoon() {
+
+    const moonX = 780 - cameraX * .05;
+    const moonY = 105;
+
+    const glow =
+        ctx.createRadialGradient(
+            moonX,
+            moonY,
+            20,
+            moonX,
+            moonY,
+            130
+        );
+
+    glow.addColorStop(
+        0,
+        "rgba(150,0,0,.25)"
+    );
+
+    glow.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle = glow;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        moonX,
+        moonY,
+        130,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    pixelCircle(
+        moonX,
+        moonY,
+        42,
+        "#8d3030"
+    );
+
+    pixelCircle(
+        moonX - 8,
+        moonY - 5,
+        37,
+        "#a63b3b"
+    );
+
+    /* Moon craters */
+
+    rect(
+        moonX - 20,
+        moonY - 10,
+        9,
+        5,
+        "#702727"
+    );
+
+    rect(
+        moonX + 10,
+        moonY + 12,
+        7,
+        7,
+        "#762828"
+    );
+
+    rect(
+        moonX + 18,
+        moonY - 18,
+        5,
+        5,
+        "#6d2525"
+    );
+}
+
+
+/* =========================================================
+   MOUNTAINS
+========================================================= */
+
+function drawMountains() {
+
+    ctx.fillStyle = "#0b0b18";
+
+    ctx.beginPath();
+
+    ctx.moveTo(0, 350);
+
+    for (let x = 0; x <= canvas.width; x += 70) {
+
+        const height =
+            70 +
+            Math.sin(x * .018) * 50 +
+            Math.sin(x * .041) * 25;
+
+        ctx.lineTo(
+            x,
+            350 - height
+        );
+    }
+
+    ctx.lineTo(canvas.width, 600);
+    ctx.lineTo(0, 600);
+
+    ctx.fill();
+}
+
+
+/* =========================================================
+   TREES
+========================================================= */
+
+function drawTree(x, y, scale = 1, layer = 0) {
+
+    x -= cameraX * (.25 + layer * .08);
+
+    const trunk = 22 * scale;
+
+    rect(
+        x - trunk / 2,
+        y - 180 * scale,
+        trunk,
+        180 * scale,
+        "#151016"
+    );
+
+    /* Branches */
+
+    rect(
+        x - 45 * scale,
+        y - 145 * scale,
+        90 * scale,
+        12 * scale,
+        "#121018"
+    );
+
+    rect(
+        x - 35 * scale,
+        y - 110 * scale,
+        70 * scale,
+        10 * scale,
+        "#121018"
+    );
+
+    /* Crown */
+
+    pixelCircle(
+        x,
+        y - 190 * scale,
+        58 * scale,
+        "#0b0a12"
+    );
+
+    pixelCircle(
+        x - 35 * scale,
+        y - 165 * scale,
+        35 * scale,
+        "#0d0b12"
+    );
+
+    pixelCircle(
+        x + 35 * scale,
+        y - 165 * scale,
+        38 * scale,
+        "#0d0b12"
+    );
+
+    /* Dead branches */
+
+    rect(
+        x - 70 * scale,
+        y - 200 * scale,
+        55 * scale,
+        5 * scale,
+        "#17131a"
+    );
+
+    rect(
+        x + 20 * scale,
+        y - 215 * scale,
+        50 * scale,
+        5 * scale,
+        "#17131a"
+    );
+}
+
+
+/* =========================================================
+   GROUND
+========================================================= */
+
+function drawGround() {
+
+    rect(
+        0,
+        390,
+        canvas.width,
+        210,
+        "#101014"
+    );
+
+    /* Ground layers */
+
+    rect(
+        0,
+        410,
+        canvas.width,
+        3,
+        "#242029"
+    );
+
+    for (let i = 0; i < 100; i++) {
+
+        const x =
+            ((i * 97) % 1200)
+            - cameraX * .7;
+
+        const y =
+            420 +
+            ((i * 53) % 170);
+
+        const size =
+            i % 5 === 0 ? 5 : 2;
+
+        rect(
+            ((x % canvas.width) + canvas.width) % canvas.width,
+            y,
+            size,
+            2,
+            i % 3 === 0 ? "#29252c" : "#1c1a20"
+        );
+    }
+
+    /* Grass */
+
+    for (let i = 0; i < 70; i++) {
+
+        const x =
+            ((i * 137) % 1100)
+            - cameraX * .8;
+
+        const y =
+            410 +
+            ((i * 31) % 20);
+
+        rect(
+            ((x % canvas.width) + canvas.width) % canvas.width,
+            y,
+            2,
+            7,
+            "#27232b"
+        );
+    }
+}
+
+
+/* =========================================================
+   GRAVESTONES
+========================================================= */
+
+function drawGravestone(x, y, size = 1) {
+
+    x -= cameraX * .8;
+
+    rect(
+        x - 17 * size,
+        y - 35 * size,
+        34 * size,
+        35 * size,
+        "#34313a"
+    );
+
+    pixelCircle(
+        x,
+        y - 35 * size,
+        17 * size,
+        "#34313a"
+    );
+
+    rect(
+        x - 12 * size,
+        y - 18 * size,
+        24 * size,
+        3 * size,
+        "#211e25"
+    );
+
+    rect(
+        x - 3 * size,
+        y - 27 * size,
+        6 * size,
+        18 * size,
+        "#17151b"
+    );
+
+    rect(
+        x - 8 * size,
+        y - 22 * size,
+        16 * size,
+        5 * size,
+        "#17151b"
+    );
+}
+
+
+/* =========================================================
+   BONE BRIDGE
+========================================================= */
+
+function drawBoneBridge() {
+
+    const startX = 350 - cameraX;
+
+    for (let i = 0; i < 15; i++) {
+
+        const x = startX + i * 30;
+
+        rect(
+            x,
+            390 + Math.sin(i) * 3,
+            25,
+            9,
+            "#b8ad99"
+        );
+
+        pixelCircle(
+            x + 25,
+            394,
+            7,
+            "#d0c3a9"
+        );
+
+        rect(
+            x + 8,
+            405,
+            4,
+            40,
+            "#665f55"
+        );
+
+        rect(
+            x + 19,
+            405,
+            4,
+            40,
+            "#665f55"
+        );
+    }
+
+    /* Bones underneath */
+
+    for (let i = 0; i < 8; i++) {
+
+        rect(
+            startX + i * 60,
+            450 + (i % 3) * 10,
+            50,
+            5,
+            "#554e48"
+        );
+    }
+}
+
+
+/* =========================================================
+   FOREGROUND FOG
+========================================================= */
+
+function drawFog() {
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            300,
+            0,
+            600
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(20,20,30,0)"
+    );
+
+    gradient.addColorStop(
+        .7,
+        "rgba(10,10,15,.25)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(5,5,8,.7)"
+    );
+
+    ctx.fillStyle = gradient;
+
+    ctx.fillRect(
+        0,
+        300,
+        canvas.width,
+        300
+    );
+}
+
+
+/* =========================================================
+   SKULL
+========================================================= */
+
+function drawSkull() {
+
+    let x =
+        skull.x -
+        cameraX;
+
+    let y =
+        skull.y -
+        skull.jump;
+
+    const scale = cameraZoom;
+
+    x =
+        (x - 480) * scale +
+        480;
+
+    y =
+        (y - 350) * scale +
+        350;
+
+    ctx.save();
+
+    /* Shadow */
+
+    ctx.fillStyle = "rgba(0,0,0,.5)";
+
+    ctx.fillRect(
+        x - 8,
+        y + 42,
+        45,
+        6
+    );
+
+    /* Cloak */
+
+    rect(
+        x - 5,
+        y + 5,
+        42,
+        50,
+        "#292832"
+    );
+
+    rect(
+        x - 10,
+        y + 17,
+        52,
+        34,
+        "#202029"
+    );
+
+    /* Hood */
+
+    rect(
+        x - 7,
+        y - 9,
+        45,
+        17,
+        "#34343f"
+    );
+
+    pixelCircle(
+        x + 15,
+        y - 4,
+        24,
+        "#34343f"
+    );
+
+    /* Hood shadow */
+
+    rect(
+        x - 2,
+        y,
+        35,
+        7,
+        "#17171e"
+    );
+
+    /* Skull */
+
+    rect(
+        x + 1,
+        y + 2,
+        31,
+        31,
+        "#c9c7bd"
+    );
+
+    /* Skull highlights */
+
+    rect(
+        x + 6,
+        y + 4,
+        21,
+        3,
+        "#f1eee0"
+    );
+
+    rect(
+        x + 3,
+        y + 12,
+        4,
+        14,
+        "#aaa89e"
+    );
+
+    /* Eyes */
+
+    rect(
+        x + 6,
+        y + 11,
+        8,
+        8,
+        "#08080a"
+    );
+
+    rect(
+        x + 19,
+        y + 11,
+        8,
+        8,
+        "#08080a"
+    );
+
+    /* Red eyes */
+
+    rect(
+        x + 8,
+        y + 13,
+        4,
+        3,
+        "#ff0000"
+    );
+
+    rect(
+        x + 21,
+        y + 13,
+        4,
+        3,
+        "#ff0000"
+    );
+
+    /* Nose */
+
+    rect(
+        x + 14,
+        y + 19,
+        6,
+        5,
+        "#222"
+    );
+
+    /* Jaw */
+
+    rect(
+        x + 5,
+        y + 25,
+        24,
+        9,
+        "#d8d5c9"
+    );
+
+    /* Teeth */
+
+    for (let i = 0; i < 5; i++) {
+
+        rect(
+            x + 8 + i * 4,
+            y + 26,
+            3,
+            6,
+            "#26252a"
+        );
+    }
+
+    /* Arms */
+
+    const swing =
+        skull.walkFrame ? 3 : -3;
+
+    rect(
+        x - 12,
+        y + 28 + swing,
+        10,
+        25,
+        "#262630"
+    );
+
+    rect(
+        x + 34,
+        y + 28 - swing,
+        10,
+        25,
+        "#262630"
+    );
+
+    /* Blade */
+
+    if (skull.attack > 0) {
+
+        ctx.save();
+
+        ctx.translate(
+            x + 37,
+            y + 32
+        );
+
+        ctx.rotate(
+            -1.2 + skull.attack
+        );
+
+        rect(
+            0,
+            0,
+            7,
+            65,
+            "#bfc2c7"
+        );
+
+        rect(
+            0,
+            0,
+            3,
+            65,
+            "#ffffff"
+        );
+
+        rect(
+            -3,
+            60,
+            14,
+            5,
+            "#5b4a36"
+        );
+
+        ctx.restore();
+    }
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   HARE
+========================================================= */
+
+function drawHare() {
+
+    let x =
+        hare.x -
+        cameraX;
+
+    let y =
+        hare.y;
+
+    /* Shadow */
+
+    ctx.fillStyle = "rgba(0,0,0,.45)";
+
+    ctx.fillRect(
+        x - 5,
+        y + 45,
+        50,
+        6
+    );
+
+    /* Body */
+
+    rect(
+        x,
+        y + 14,
+        38,
+        32,
+        "#81482d"
+    );
+
+    rect(
+        x + 5,
+        y + 19,
+        29,
+        20,
+        "#9b5835"
+    );
+
+    if (!hare.headless) {
+
+        /* Head */
+
+        rect(
+            x + 4,
+            y - 5,
+            31,
+            25,
+            "#a65d38"
+        );
+
+        /* Ears */
+
+        rect(
+            x + 5,
+            y - 33,
+            8,
+            30,
+            "#82462e"
+        );
+
+        rect(
+            x + 25,
+            y - 36,
+            8,
+            33,
+            "#82462e"
+        );
+
+        /* Inner ears */
+
+        rect(
+            x + 8,
+            y - 28,
+            3,
+            20,
+            "#d78982"
+        );
+
+        rect(
+            x + 28,
+            y - 31,
+            3,
+            22,
+            "#d78982"
+        );
+
+        /* Face */
+
+        rect(
+            x + 9,
+            y + 3,
+            7,
+            7,
+            "#080808"
+        );
+
+        rect(
+            x + 24,
+            y + 3,
+            7,
+            7,
+            "#080808"
+        );
+
+        /* Eyes */
+
+        rect(
+            x + 11,
+            y + 5,
+            3,
+            2,
+            "#ffdddd"
+        );
+
+        rect(
+            x + 26,
+            y + 5,
+            3,
+            2,
+            "#ffdddd"
+        );
+
+        /* Nose */
+
+        rect(
+            x + 17,
+            y + 13,
+            7,
+            4,
+            "#df7373"
+        );
+
+        /* Mouth */
+
+        rect(
+            x + 17,
+            y + 17,
+            8,
+            2,
+            "#42201d"
+        );
+
+    } else {
+
+        /* Blood */
+
+        rect(
+            x + 7,
+            y - 5,
+            27,
+            12,
+            "#720000"
+        );
+
+        rect(
+            x + 11,
+            y + 2,
+            18,
+            5,
+            "#c00000"
+        );
+    }
+
+    /* Tail */
+
+    pixelCircle(
+        x + 39,
+        y + 22,
+        9,
+        "#d5d0c7"
+    );
+
+    /* Legs */
+
+    const leg =
+        hare.walkFrame ? 3 : -3;
+
+    rect(
+        x + 5,
+        y + 40 + leg,
+        9,
+        14,
+        "#713d29"
+    );
+
+    rect(
+        x + 25,
+        y + 40 - leg,
+        9,
+        14,
+        "#713d29"
+    );
+}
+
+
+/* =========================================================
+   FINISH LINE
+========================================================= */
+
+function drawFinishLine() {
+
+    const x =
+        820 -
+        cameraX;
+
+    rect(
+        x,
+        310,
+        5,
+        105,
+        "#c8c8c8"
+    );
+
+    for (let i = 0; i < 8; i++) {
+
+        rect(
+            x + 5,
+            315 + i * 12,
+            28,
+            12,
+            i % 2 === 0
+                ? "#eee"
+                : "#a00000"
+        );
+    }
+
+    rect(
+        x + 5,
+        411,
+        35,
+        5,
+        "#aaa"
+    );
+}
+
+
+/* =========================================================
+   DARK SPIRIT
+========================================================= */
+
+function drawSpirit() {
+
+    const x = 650 - cameraX;
+    const y = 285;
+
+    /* Aura */
+
+    const glow =
+        ctx.createRadialGradient(
+            x,
+            y,
+            10,
+            x,
+            y,
+            90
+        );
+
+    glow.addColorStop(
+        0,
+        "rgba(100,0,130,.25)"
+    );
+
+    glow.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle = glow;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        90,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    /* Spirit */
+
+    pixelCircle(
+        x,
+        y,
+        24,
+        "#30233d"
+    );
+
+    rect(
+        x - 20,
+        y + 10,
+        40,
+        40,
+        "#241a2c"
+    );
+
+    /* Eyes */
+
+    rect(
+        x - 13,
+        y - 4,
+        8,
+        5,
+        "#a000ff"
+    );
+
+    rect(
+        x + 5,
+        y - 4,
+        8,
+        5,
+        "#a000ff"
+    );
+
+    /* Hands */
+
+    rect(
+        x - 45,
+        y + 15,
+        25,
+        5,
+        "#3b2948"
+    );
+
+    rect(
+        x + 20,
+        y + 15,
+        25,
+        5,
+        "#3b2948"
+    );
+}
+
+
+/* =========================================================
+   FOREST COMPOSITION
+========================================================= */
+
+function drawWorld() {
+
+    drawSky();
+    drawStars();
+    drawMoon();
+    drawMountains();
+
+    /* Back trees */
+
+    for (let i = 0; i < 12; i++) {
+
+        drawTree(
+            i * 105 + 30,
+            400,
+            .8,
+            0
+        );
+    }
+
+    drawGround();
+
+    /* Graveyard */
+
+    for (let i = 0; i < 9; i++) {
+
+        drawGravestone(
+            i * 115 + 70,
+            430,
+            .8 + (i % 3) * .15
+        );
+    }
+
+    /* Bridge */
+
+    if (sceneIndex >= 11) {
+        drawBoneBridge();
+    }
+
+    /* Finish */
+
+    if (sceneIndex >= 13) {
+        drawFinishLine();
+    }
+
+    /* Spirit */
+
+    if (
+        sceneIndex === 6 ||
+        sceneIndex === 7
+    ) {
+        drawSpirit();
+    }
+
+    drawFog();
+}
+
+
+/* =========================================================
+   STORY
+========================================================= */
+
+const scenes = [
+
+    {
+        text:
+        "In a dark twisted forest...",
+        duration: 5,
+        camera: "wide"
+    },
+
+    {
+        text:
+        "A tiny skull encounters a proud hare.",
+        duration: 5,
+        camera: "meet"
+    },
+
+    {
+        text:
+        "Hare: 'I'm the fastest! Let's race, skull!'",
+        duration: 5,
+        camera: "duel"
+    },
+
+    {
+        text:
+        "Skull: 'Very well, hare. Let's race.'",
+        duration: 5,
+        camera: "accept"
+    },
+
+    {
+        text:
+        "The race begins! The hare dashes ahead!",
+        duration: 6,
+        camera: "race"
+    },
+
+    {
+        text:
+        "The skull moves slowly but steadily...",
+        duration: 6,
+        camera: "slow"
+    },
+
+    {
+        text:
+        "The hare encounters a dark spirit offering power.",
+        duration: 6,
+        camera: "spirit"
+    },
+
+    {
+        text:
+        "Hare: 'I don't need your power, I'm winning!'",
+        duration: 6,
+        camera: "spirit"
+    },
+
+    {
+        text:
+        "The skull finds a cursed shortcut through the graveyard.",
+        duration: 7,
+        camera: "graveyard"
+    },
+
+    {
+        text:
+        "The hare meets other hares who doubt the skull.",
+        duration: 6,
+        camera: "hares"
+    },
+
+    {
+        text:
+        "Other hares: 'You're racing a skull? How odd!'",
+        duration: 6,
+        camera: "hares"
+    },
+
+    {
+        text:
+        "The skull crosses a bridge of bones.",
+        duration: 7,
+        camera: "bridge"
+    },
+
+    {
+        text:
+        "Skull: 'The bridge creaks but holds...'",
+        duration: 6,
+        camera: "bridge"
+    },
+
+    {
+        text:
+        "The hare sees the finish line and decides to rest.",
+        duration: 6,
+        camera: "finish"
+    },
+
+    {
+        text:
+        "Hare: 'I'm so far ahead, I can sleep for a while...'",
+        duration: 6,
+        camera: "rest"
+    },
+
+    {
+        text:
+        "The hare falls into a deep sleep...",
+        duration: 7,
+        camera: "sleep"
+    },
+
+    {
+        text:
+        "The skull approaches and sees the sleeping hare.",
+        duration: 7,
+        camera: "approach"
+    },
+
+    {
+        text:
+        "Skull: 'The hare is asleep! And the finish line is right there!'",
+        duration: 7,
+        camera: "realization"
+    },
+
+    {
+        text:
+        "Skull: 'I could win... or I could win differently...'",
+        duration: 7,
+        camera: "decision"
+    },
+
+    {
+        text:
+        "The skull draws its blade and strikes!",
+        duration: 6,
+        camera: "kill"
+    },
+
+    {
+        text:
+        "The skull jumps in victory!",
+        duration: 7,
+        camera: "victory"
+    }
+];
+
+
+/* =========================================================
+   SCENE CONTROL
+========================================================= */
+
+function startScene(index) {
+
+    sceneIndex = index;
+
+    sceneTimer = 0;
+
+    storyText.textContent =
+        scenes[index].text;
+
+    sceneCounter.textContent =
+        `SCENE ${String(index + 1).padStart(2, "0")}`;
+
+    fade = 1;
+
+    /* Camera setup */
+
+    switch (scenes[index].camera) {
+
+        case "wide":
+            cameraX = 0;
+            cameraZoom = 1;
+            break;
+
+        case "meet":
+            cameraX = 0;
+            cameraZoom = 1.15;
+            break;
+
+        case "duel":
+            cameraX = 0;
+            cameraZoom = 1.35;
+            break;
+
+        case "accept":
+            cameraX = 0;
+            cameraZoom = 1.3;
+            break;
+
+        case "race":
+            cameraZoom = 1;
+            break;
+
+        case "spirit":
+            cameraX = 380;
+            cameraZoom = 1.4;
+            break;
+
+        case "graveyard":
+            cameraX = 250;
+            cameraZoom = 1.1;
+            break;
+
+        case "hares":
+            cameraX = 430;
+            cameraZoom = 1.2;
+            break;
+
+        case "bridge":
+            cameraX = 270;
+            cameraZoom = 1.15;
+            break;
+
+        case "finish":
+            cameraX = 550;
+            cameraZoom = 1.2;
+            break;
+
+        case "rest":
+            cameraX = 560;
+            cameraZoom = 1.5;
+            break;
+
+        case "sleep":
+            cameraX = 590;
+            cameraZoom = 1.65;
+            break;
+
+        case "approach":
+            cameraX = 500;
+            cameraZoom = 1.4;
+            break;
+
+        case "realization":
+            cameraX = 560;
+            cameraZoom = 1.65;
+            break;
+
+        case "decision":
+            cameraX = 560;
+            cameraZoom = 1.8;
+            break;
+
+        case "kill":
+            cameraX = 550;
+            cameraZoom = 2.1;
+            skull.attack = 0;
+            break;
+
+        case "victory":
+            cameraX = 520;
+            cameraZoom = 1.5;
+            skull.jump = 0;
+            break;
+    }
+
+    /* Scene-specific actions */
+
+    if (index === 4) {
+
+        hare.targetX = 690;
+        skull.targetX = 300;
+    }
+
+    if (index === 5) {
+
+        skull.targetX = 420;
+    }
+
+    if (index === 8) {
+
+        skull.targetX = 500;
+    }
+
+    if (index === 11) {
+
+        skull.targetX = 600;
+    }
+
+    if (index >= 13) {
+
+        hare.x = 720;
+        hare.targetX = 720;
+
+        skull.targetX =
+            index >= 16 ? 670 : 560;
+    }
+
+    if (index >= 14) {
+
+        hare.sleeping = true;
+    }
+
+    if (index === 19) {
+
+        hare.sleeping = true;
+
+        skull.targetX =
+            hare.x - 25;
+    }
+}
+
+
+/* =========================================================
+   UPDATE CHARACTERS
+========================================================= */
+
+function updateCharacters(dt) {
+
+    /* Skull */
+
+    if (
+        Math.abs(skull.targetX - skull.x) > 2
+        &&
+        sceneIndex !== 19
+    ) {
+
+        const direction =
+            skull.targetX > skull.x
+                ? 1
+                : -1;
+
+        skull.x +=
+            direction *
+            .45 *
+            dt;
+
+        skull.walkTimer += dt;
+
+        if (skull.walkTimer > 8) {
+
+            skull.walkTimer = 0;
+
+            skull.walkFrame =
+                1 - skull.walkFrame;
+        }
+
+        if (Math.random() < .025) {
+            createParticle(
+                skull.x + 15,
+                skull.y + 50,
+                "dust"
+            );
+        }
+    }
+
+    /* Hare */
+
+    if (
+        !hare.sleeping &&
+        Math.abs(hare.targetX - hare.x) > 2
+    ) {
+
+        const direction =
+            hare.targetX > hare.x
+                ? 1
+                : -1;
+
+        hare.x +=
+            direction *
+            .9 *
+            dt;
+
+        hare.walkTimer += dt;
+
+        if (hare.walkTimer > 6) {
+
+            hare.walkTimer = 0;
+
+            hare.walkFrame =
+                1 - hare.walkFrame;
+        }
+
+        if (Math.random() < .04) {
+
+            createParticle(
+                hare.x + 15,
+                hare.y + 48,
+                "dust"
+            );
+        }
+    }
+
+    /* Sleep breathing */
+
+    if (hare.sleeping) {
+
+        hare.y =
+            390 +
+            Math.sin(
+                performance.now() * .003
+            ) * 1.5;
+    }
+
+    /* Victory jump */
+
+    if (sceneIndex === 20) {
+
+        skull.jump =
+            Math.abs(
+                Math.sin(
+                    performance.now() * .005
+                )
+            ) * 65;
+    }
+
+    /* Attack */
+
+    if (sceneIndex === 19) {
+
+        const progress =
+            Math.min(
+                sceneTimer / 2.5,
+                1
+            );
+
+        skull.attack =
+            progress * 1.8;
+
+        if (
+            progress > .45 &&
+            !hareKilled
+        ) {
+
+            hareKilled = true;
+
+            hare.headless = true;
+
+            screenShake = 12;
+
+            for (let i = 0; i < 25; i++) {
+
+                createParticle(
+                    hare.x + 20,
+                    hare.y + 10,
+                    "blood"
+                );
+            }
+        }
+    }
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+function updateCamera(dt) {
+
+    const target =
+        skull.x - 480;
+
+    if (
+        sceneIndex === 4 ||
+        sceneIndex === 5 ||
+        sceneIndex === 8 ||
+        sceneIndex === 11
+    ) {
+
+        cameraX +=
+            (target - cameraX)
+            * .015
+            * dt;
+    }
+
+    if (sceneIndex >= 13) {
+
+        cameraX +=
+            ((hare.x - 480) - cameraX)
+            * .02
+            * dt;
+    }
+
+    if (screenShake > 0) {
+
+        cameraX +=
+            (Math.random() - .5)
+            * screenShake;
+
+        screenShake *= .85;
+    }
+}
+
+
+/* =========================================================
+   DRAW COMPLETE FRAME
+========================================================= */
+
+function drawFrame() {
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.save();
+
+    drawWorld();
+
+    drawSkull();
+
+    drawHare();
+
+    drawParticles();
+
+    ctx.restore();
+
+    /* Cinematic vignette */
+
+    const vignette =
+        ctx.createRadialGradient(
+            canvas.width / 2,
+            canvas.height / 2,
+            170,
+            canvas.width / 2,
+            canvas.height / 2,
+            550
+        );
+
+    vignette.addColorStop(
+        0,
+        "rgba(0,0,0,0)"
+    );
+
+    vignette.addColorStop(
+        1,
+        "rgba(0,0,0,.72)"
+    );
+
+    ctx.fillStyle = vignette;
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    /* Letterbox */
+
+    rect(
+        0,
+        0,
+        canvas.width,
+        25,
+        "#050507"
+    );
+
+    rect(
+        0,
+        canvas.height - 25,
+        canvas.width,
+        25,
+        "#050507"
+    );
+
+    /* Fade */
+
+    if (fade > 0) {
+
+        ctx.fillStyle =
+            `rgba(0,0,0,${fade})`;
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+    }
+}
+
+
+/* =========================================================
+   MUSIC ENGINE
+========================================================= */
+
+let audioCtx = null;
+
+let masterGain = null;
+
+let musicTimer = null;
+
+let musicStep = 0;
+
+const melody = [
+    146.83,
+    174.61,
+    196.00,
+    174.61,
+    130.81,
+    146.83,
+    174.61,
+    116.54,
+
+    146.83,
+    174.61,
+    220.00,
+    196.00,
+    174.61,
+    146.83,
+    130.81,
+    116.54
+];
+
+const bass = [
+    73.42,
+    73.42,
+    65.41,
+    65.41,
+    58.27,
+    58.27,
+    65.41,
+    65.41
+];
+
+
+function initAudio() {
+
+    if (audioCtx) {
+
+        if (
+            audioCtx.state === "suspended"
+        ) {
+            audioCtx.resume();
+        }
+
+        return;
+    }
+
+    const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+    audioCtx =
+        new AudioContext();
+
+    masterGain =
+        audioCtx.createGain();
+
+    masterGain.gain.value = .13;
+
+    masterGain.connect(
+        audioCtx.destination
+    );
+
+    startMusicLoop();
+}
+
+
+function playTone(
+    frequency,
+    duration,
+    type = "square",
+    volume = .1
+) {
+
+    if (
+        !audioCtx ||
+        !musicOn
+    ) {
+        return;
+    }
+
+    const osc =
+        audioCtx.createOscillator();
+
+    const gain =
+        audioCtx.createGain();
+
+    osc.type = type;
+
+    osc.frequency.setValueAtTime(
+        frequency,
+        audioCtx.currentTime
+    );
+
+    gain.gain.setValueAtTime(
+        0.0001,
+        audioCtx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        volume,
+        audioCtx.currentTime + .01
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        audioCtx.currentTime + duration
+    );
+
+    osc.connect(gain);
+
+    gain.connect(masterGain);
+
+    osc.start();
+
+    osc.stop(
+        audioCtx.currentTime +
+        duration +
+        .02
+    );
+}
+
+
+function playKick() {
+
+    if (!audioCtx || !musicOn) {
+        return;
+    }
+
+    const osc =
+        audioCtx.createOscillator();
+
+    const gain =
+        audioCtx.createGain();
+
+    osc.type = "sine";
+
+    osc.frequency.setValueAtTime(
+        100,
+        audioCtx.currentTime
+    );
+
+    osc.frequency.exponentialRampToValueAtTime(
+        45,
+        audioCtx.currentTime + .12
+    );
+
+    gain.gain.setValueAtTime(
+        .13,
+        audioCtx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        .001,
+        audioCtx.currentTime + .12
+    );
+
+    osc.connect(gain);
+
+    gain.connect(masterGain);
+
+    osc.start();
+
+    osc.stop(
+        audioCtx.currentTime + .13
+    );
+}
+
+
+function playHat() {
+
+    if (!audioCtx || !musicOn) {
+        return;
+    }
+
+    const buffer =
+        audioCtx.createBuffer(
+            1,
+            audioCtx.sampleRate * .04,
+            audioCtx.sampleRate
+        );
+
+    const data =
+        buffer.getChannelData(0);
+
+    for (
+        let i = 0;
+        i < data.length;
+        i++
+    ) {
+
+        data[i] =
+            Math.random() * 2 - 1;
+    }
+
+    const source =
+        audioCtx.createBufferSource();
+
+    const gain =
+        audioCtx.createGain();
+
+    source.buffer = buffer;
+
+    gain.gain.value = .025;
+
+    source.connect(gain);
+
+    gain.connect(masterGain);
+
+    source.start();
+}
+
+
+function startMusicLoop() {
+
+    if (musicTimer) {
+        clearInterval(musicTimer);
+    }
+
+    musicStep = 0;
+
+    musicTimer =
+        setInterval(
+            () => {
+
+                if (
+                    !musicOn ||
+                    !audioCtx
+                ) {
+                    return;
                 }
-                
-                // Hood
-                ctx.fillStyle = '#4a4a4a';
-                ctx.fillRect(x - 2, y - 5, this.width + 4, this.height + 10);
-                
-                // Hood top
-                ctx.beginPath();
-                ctx.moveTo(x - 5, y);
-                ctx.lineTo(x + this.width / 2, y - 15);
-                ctx.lineTo(x + this.width + 5, y);
-                ctx.fillStyle = '#4a4a4a';
-                ctx.fill();
-                
-                // Skull face
-                ctx.fillStyle = '#e0e0e0';
-                ctx.fillRect(x, y, this.width, this.height);
-                
-                // Eyes
-                ctx.fillStyle = '#000';
-                ctx.fillRect(x + 5, y + 8, 6, 6);
-                ctx.fillRect(x + this.width - 11, y + 8, 6, 6);
-                
-                // Red glow eyes
-                ctx.fillStyle = '#ff0000';
-                ctx.fillRect(x + 7, y + 10, 2, 2);
-                ctx.fillRect(x + this.width - 9, y + 10, 2, 2);
-                
-                // Nose
-                ctx.fillStyle = '#000';
-                ctx.fillRect(x + 13, y + 15, 4, 3);
-                
-                // Teeth
-                ctx.fillStyle = '#fff';
-                for (let i = 0; i < 4; i++) {
-                    ctx.fillRect(x + 8 + i * 4, y + 22, 3, 4);
+
+                const note =
+                    melody[
+                        musicStep %
+                        melody.length
+                    ];
+
+                const bassNote =
+                    bass[
+                        Math.floor(
+                            musicStep / 2
+                        ) %
+                        bass.length
+                    ];
+
+                /* Main melody */
+
+                playTone(
+                    note,
+                    .19,
+                    "square",
+                    .055
+                );
+
+                /* Bass */
+
+                if (
+                    musicStep % 2 === 0
+                ) {
+
+                    playTone(
+                        bassNote,
+                        .32,
+                        "triangle",
+                        .075
+                    );
                 }
-                
-                // Blood on blade if hare killed
-                if (hareKilled) {
-                    ctx.fillStyle = '#ff0000';
-                    ctx.fillRect(x + this.width, y + 5, 15, 3);
+
+                /* Rhythm */
+
+                if (
+                    musicStep % 4 === 0
+                ) {
+                    playKick();
                 }
-                
-                ctx.restore();
-                
-                // Walking animation
-                if (gameStarted && !moralShown) {
-                    this.animationTimer++;
-                    if (this.animationTimer > 10) {
-                        this.animationFrame = 1 - this.animationFrame;
-                        this.animationTimer = 0;
-                    }
+
+                if (
+                    musicStep % 2 === 1
+                ) {
+                    playHat();
                 }
-                
-                // Jump animation
-                if (this.jumping) {
-                    this.jumpHeight = Math.sin(this.animationTimer * 0.2) * 20;
-                    if (this.jumpHeight < 0) {
-                        this.jumpHeight = 0;
-                        this.jumping = false;
-                    }
-                }
+
+                musicStep++;
+
+            },
+            230
+        );
+}
+
+
+/* =========================================================
+   MUSIC TOGGLE
+========================================================= */
+
+function toggleMusic() {
+
+    musicOn =
+        !musicOn;
+
+    musicToggle.textContent =
+        musicOn
+            ? "MUSIC: ON"
+            : "MUSIC: OFF";
+
+    if (
+        audioCtx &&
+        masterGain
+    ) {
+
+        masterGain.gain.setTargetAtTime(
+            musicOn ? .13 : .0001,
+            audioCtx.currentTime,
+            .03
+        );
+    }
+
+    if (
+        musicOn &&
+        gameStarted
+    ) {
+
+        initAudio();
+    }
+}
+
+
+/* =========================================================
+   GAME LOOP
+========================================================= */
+
+function update(time) {
+
+    if (!lastTime) {
+        lastTime = time;
+    }
+
+    const dt =
+        Math.min(
+            (time - lastTime) / 16.67,
+            2
+        );
+
+    lastTime = time;
+
+    if (gameStarted) {
+
+        sceneTimer +=
+            dt / 60;
+
+        updateCharacters(dt);
+
+        updateCamera(dt);
+
+        updateParticles(dt);
+
+        /* Fade in */
+
+        if (fade > 0) {
+
+            fade -=
+                .035 * dt;
+
+            if (fade < 0) {
+                fade = 0;
             }
         }
 
-        class Hare {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.width = 35;
-                this.height = 40;
-                this.animationFrame = 0;
-                this.animationTimer = 0;
-                this.headless = false;
-            }
+        /* Scene progression */
 
-            draw() {
-                const x = this.x;
-                const y = this.y;
-                
-                // Body
-                ctx.fillStyle = '#8B4513';
-                ctx.fillRect(x, y + 15, this.width, this.height - 15);
-                
-                // Head (if not headless)
-                if (!this.headless) {
-                    ctx.fillStyle = '#A0522D';
-                    ctx.fillRect(x + 5, y, this.width - 10, 20);
-                    
-                    // Ears
-                    ctx.fillStyle = '#8B4513';
-                    ctx.fillRect(x + 3, y - 15, 6, 15);
-                    ctx.fillRect(x + this.width - 9, y - 15, 6, 15);
-                    
-                    // Inner ears
-                    ctx.fillStyle = '#FFB6C1';
-                    ctx.fillRect(x + 5, y - 13, 2, 10);
-                    ctx.fillRect(x + this.width - 7, y - 13, 2, 10);
-                    
-                    // Eyes
-                    ctx.fillStyle = '#000';
-                    ctx.fillRect(x + 8, y + 8, 4, 4);
-                    ctx.fillRect(x + this.width - 12, y + 8, 4, 4);
-                    
-                    // Nose
-                    ctx.fillStyle = '#FF69B4';
-                    ctx.fillRect(x + 15, y + 14, 5, 3);
-                } else {
-                    // Blood where head was
-                    ctx.fillStyle = '#ff0000';
-                    ctx.fillRect(x + 5, y, this.width - 10, 10);
-                }
-                
-                // Tail
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(x + this.width, y + 20, 5, 5);
-                
-                // Animation
-                if (gameStarted && !moralShown) {
-                    this.animationTimer++;
-                    if (this.animationTimer > 8) {
-                        this.animationFrame = 1 - this.animationFrame;
-                        this.animationTimer = 0;
-                    }
-                }
-            }
-        }
+        if (
+            sceneTimer >=
+            scenes[sceneIndex].duration
+        ) {
 
-        const skull = new Skull(50, 350);
-        const hare = new Hare(50, 350);
+            if (
+                sceneIndex <
+                scenes.length - 1
+            ) {
 
-        // Scene elements
-        const scenes = [
-            { text: "In a dark twisted forest...", type: "intro" },
-            { text: "A tiny skull encounters a proud hare.", type: "meet" },
-            { text: "Hare: 'I'm the fastest! Let's race, skull!'", type: "challenge" },
-            { text: "Skull: 'Very well, hare. Let's race.'", type: "accept" },
-            { text: "The race begins! The hare dashes ahead!", type: "race_start" },
-            { text: "The skull moves slowly but steadily...", type: "slow_skull" },
-            { text: "The hare encounters a dark spirit offering power.", type: "scene1" },
-            { text: "Hare: 'I don't need your power, I'm winning!'", type: "scene1b" },
-            { text: "The skull finds a cursed shortcut through the graveyard.", type: "scene2" },
-            { text: "The hare meets other hares who doubt the skull.", type: "scene3" },
-            { text: "Other hares: 'You're racing a skull? How odd!'", type: "scene3b" },
-            { text: "The skull crosses a bridge of bones.", type: "scene4" },
-            { text: "Skull: 'The bridge creaks but holds...'", type: "scene4b" },
-            { text: "The hare sees the finish line and decides to rest.", type: "hare_rest" },
-            { text: "Hare: 'I'm so far ahead, I can sleep for a while...'", type: "hare_sleep" },
-            { text: "The hare falls into a deep sleep...", type: "sleep" },
-            { text: "The skull approaches and sees the sleeping hare.", type: "skull_approach" },
-            { text: "Skull: 'The hare is asleep! And the finish line is right there!'", type: "realization" },
-            { text: "Skull: 'I could win... or I could win differently...'", type: "decision" },
-            { text: "The skull draws its blade and strikes!", type: "kill" },
-            { text: "The skull jumps in victory!", type: "victory" },
-        ];
+                startScene(
+                    sceneIndex + 1
+                );
 
-        // Drawing functions
-        function drawBackground() {
-            // Dark sky
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#0a0a2e');
-            gradient.addColorStop(0.5, '#1a1a3e');
-            gradient.addColorStop(1, '#2a2a4e');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Moon
-            ctx.fillStyle = '#ff4444';
-            ctx.beginPath();
-            ctx.arc(700, 80, 40, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Moon glow
-            const moonGradient = ctx.createRadialGradient(700, 80, 40, 700, 80, 100);
-            moonGradient.addColorStop(0, 'rgba(255, 68, 68, 0.3)');
-            moonGradient.addColorStop(1, 'rgba(255, 68, 68, 0)');
-            ctx.fillStyle = moonGradient;
-            ctx.beginPath();
-            ctx.arc(700, 80, 100, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Ground
-            ctx.fillStyle = '#1a1a1a';
-            ctx.fillRect(0, 400, canvas.width, 100);
-            
-            // Ground texture
-            ctx.fillStyle = '#2a2a2a';
-            for (let i = 0; i < 20; i++) {
-                ctx.fillRect(i * 40, 400 + Math.sin(i) * 20, 20, 5);
-            }
-            
-            // Trees
-            for (let i = 0; i < 5; i++) {
-                drawTree(100 + i * 150, 400);
-            }
-            
-            // Gravestones
-            for (let i = 0; i < 8; i++) {
-                drawGravestone(80 + i * 100, 400);
-            }
-            
-            // Bridge of bones
-            if (storyPhase >= 12) {
-                drawBridge(400, 380);
-            }
-        }
-
-        function drawTree(x, y) {
-            ctx.fillStyle = '#2a1a1a';
-            ctx.fillRect(x - 5, y - 80, 10, 80);
-            ctx.fillStyle = '#1a0a0a';
-            ctx.beginPath();
-            ctx.arc(x, y - 100, 30, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        function drawGravestone(x, y) {
-            ctx.fillStyle = '#3a3a3a';
-            ctx.fillRect(x - 15, y - 25, 30, 25);
-            ctx.beginPath();
-            ctx.arc(x, y - 25, 15, Math.PI, 0);
-            ctx.fill();
-            ctx.fillStyle = '#ff0000';
-            ctx.fillRect(x - 5, y - 18, 10, 3);
-        }
-
-        function drawBridge(x, y) {
-            ctx.fillStyle = '#d4c5a9';
-            for (let i = 0; i < 5; i++) {
-                ctx.fillRect(x + i * 20, y, 15, 5);
-            }
-            ctx.fillStyle = '#fff';
-            for (let i = 0; i < 4; i++) {
-                ctx.fillRect(x + 10 + i * 20, y - 10, 5, 10);
-            }
-        }
-
-        function drawFinishLine() {
-            ctx.fillStyle = '#ff0000';
-            for (let i = 0; i < 10; i++) {
-                ctx.fillRect(750 - i * 2, 370, 2, 30);
-            }
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(750, 370, 2, 30);
-            
-            // Finish flag
-            ctx.fillStyle = '#ff0000';
-            ctx.fillRect(745, 350, 20, 15);
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(745, 355, 20, 5);
-        }
-
-        function drawRaceProgress() {
-            ctx.fillStyle = '#333';
-            ctx.fillRect(50, 20, 700, 20);
-            ctx.fillStyle = '#ff0000';
-            ctx.fillRect(50, 20, raceProgress * 700, 20);
-            
-            // Finish line marker
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(740, 15, 5, 30);
-        }
-
-        function drawAnimation() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            drawBackground();
-            drawRaceProgress();
-            drawFinishLine();
-            
-            // Draw characters with zoom if needed
-            if (cameraZoom && storyPhase === 19) {
-                // Zoom on skull during kill
-                skull.draw(true);
-                hare.draw();
-            } else if (cameraZoom && storyPhase === 20) {
-                // Zoom on skull victory jump
-                skull.draw(true);
-                hare.draw();
             } else {
-                skull.draw();
-                hare.draw();
-            }
-            
-            // Draw blood if hare is killed
-            if (hareKilled) {
-                ctx.fillStyle = '#ff0000';
-                ctx.fillRect(hare.x, hare.y + 15, 35, 5);
-                ctx.fillRect(hare.x + 5, hare.y + 10, 25, 3);
+
+                showMoral();
             }
         }
+    }
 
-        function updateGame() {
-            if (!gameStarted || moralShown) return;
-            
-            gameTime++;
-            
-            // Update story phase
-            if (gameTime % 250 === 0 && storyPhase < scenes.length - 1) {
-                storyPhase++;
-                storyText.textContent = scenes[storyPhase].text;
-                
-                // Special actions
-                if (storyPhase === 19) {
-                    // Kill scene
-                    cameraZoom = true;
-                    zoomTimer = 0;
-                } else if (storyPhase === 20) {
-                    // Victory jump
-                    skull.jumping = true;
-                    cameraZoom = true;
-                    zoomTimer = 0;
-                }
-            }
-            
-            // Update positions based on story phase
-            if (storyPhase >= 4 && !hareKilled) {
-                if (storyPhase < 13) {
-                    // Hare runs fast
-                    hare.x += 2.5;
-                    skull.x += 0.4;
-                } else if (storyPhase === 13) {
-                    // Hare reaches near finish
-                    hare.x = 650;
-                    storyText.textContent = "Hare: 'I'm so far ahead, I can sleep for a while...'";
-                } else if (storyPhase === 14 || storyPhase === 15) {
-                    // Hare sleeping
-                    hareSleeping = true;
-                    skull.x += 0.6;
-                    storyText.textContent = "The hare fell into a deep sleep...";
-                } else if (storyPhase === 16 || storyPhase === 17) {
-                    skull.x += 0.6;
-                    storyText.textContent = "The skull approaches the sleeping hare...";
-                } else if (storyPhase === 18) {
-                    skull.x += 0.8;
-                    storyText.textContent = "Skull: 'The hare is asleep! The finish line is right there!'";
-                } else if (storyPhase === 19) {
-                    if (skull.x >= hare.x - 20) {
-                        hareKilled = true;
-                        hare.headless = true;
-                        storyText.textContent = "The skull strikes! The hare is dead!";
-                    } else {
-                        skull.x += 1.5;
-                    }
-                } else if (storyPhase === 20) {
-                    // Victory jump
-                    skull.jumping = true;
-                    storyText.textContent = "SKULL: 'VICTORY! VICTORY IS MINE!'";
-                }
-            }
-            
-            // Update race progress
-            raceProgress = Math.max(skull.x - 50, hare.x - 50) / 700;
-            
-            // Check for moral
-            if (hareKilled && !moralShown && storyPhase === 20) {
-                moralShown = true;
-                setTimeout(() => {
-                    moralDiv.style.display = 'block';
-                    moralDiv.innerHTML = "MORAL OF THE STORY:<br><br>DON'T TRUST EVEN YOURSELF.<br>THE DARKNESS LIES WITHIN US ALL.<br><br>CLICK TO RESTART";
-                    moralDiv.style.cursor = 'pointer';
-                    moralDiv.onclick = restartGame;
-                }, 2000);
-            }
-            
-            drawAnimation();
-            requestAnimationFrame(updateGame);
-        }
+    drawFrame();
 
-        function restartGame() {
-            location.reload();
-        }
+    requestAnimationFrame(update);
+}
 
-        function startGame() {
-            titleScreen.style.display = 'none';
-            gameStarted = true;
-            storyPhase = 0;
-            storyText.textContent = scenes[0].text;
-            initAudio();
-            updateGame();
-        }
 
-        // Music functions
-        function initAudio() {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            startMusic();
-        }
+/* =========================================================
+   MORAL
+========================================================= */
 
-        function startMusic() {
-            if (!musicOn) return;
-            
-            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
-            let noteIndex = 0;
-            
-            musicInterval = setInterval(() => {
-                if (!musicOn) return;
-                
-                // Create oscillator for melody
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                // Dark melody pattern
-                const melody = [0, 2, 4, 2, 0, 3, 5, 3, 0, 2, 4, 2, 7, 5, 4, 2];
-                const note = melody[noteIndex % melody.length];
-                
-                osc.frequency.value = notes[note] / 2; // Lower octave for dark feel
-                osc.type = 'square';
-                
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.3);
-                
-                noteIndex++;
-                
-                // Add bass note
-                if (noteIndex % 4 === 0) {
-                    const bassOsc = audioCtx.createOscillator();
-                    const bassGain = audioCtx.createGain();
-                    
-                    bassOsc.connect(bassGain);
-                    bassGain.connect(audioCtx.destination);
-                    
-                    bassOsc.frequency.value = notes[0] / 4;
-                    bassOsc.type = 'sawtooth';
-                    
-                    bassGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    bassGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                    
-                    bassOsc.start(audioCtx.currentTime);
-                    bassOsc.stop(audioCtx.currentTime + 0.5);
-                }
-            }, 250);
-        }
+function showMoral() {
 
-        function toggleMusic() {
-            musicOn = !musicOn;
-            musicToggle.textContent = musicOn ? 'MUSIC: ON' : 'MUSIC: OFF';
-            
-            if (!musicOn && musicInterval) {
-                clearInterval(musicInterval);
-            } else if (musicOn && gameStarted) {
-                startMusic();
-            }
-        }
+    if (moralShown) {
+        return;
+    }
 
-        musicToggle.addEventListener('click', toggleMusic);
-        titleScreen.addEventListener('click', startGame);
+    moralShown = true;
 
-        // Initial draw
-        drawAnimation();
-    </script>
+    setTimeout(
+        () => {
+
+            moral.style.display =
+                "flex";
+
+        },
+        1800
+    );
+}
+
+
+/* =========================================================
+   RESTART
+========================================================= */
+
+function restartGame() {
+
+    location.reload();
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function startGame() {
+
+    if (gameStarted) {
+        return;
+    }
+
+    gameStarted = true;
+
+    titleScreen.style.display =
+        "none";
+
+    initAudio();
+
+    startScene(0);
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+titleScreen.addEventListener(
+    "click",
+    startGame
+);
+
+musicToggle.addEventListener(
+    "click",
+    (event) => {
+
+        event.stopPropagation();
+
+        toggleMusic();
+    }
+);
+
+moral.addEventListener(
+    "click",
+    restartGame
+);
+
+
+/* =========================================================
+   INITIAL STATE
+========================================================= */
+
+startScene(0);
+
+requestAnimationFrame(update);
+
+</script>
+
 </body>
 </html>
