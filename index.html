@@ -7,6 +7,7 @@
 <title>Dark Pixel Tale - The Skull & The Hare</title>
 
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 * {
@@ -20,266 +21,284 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #050507;
+    background: #030305;
 }
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
+
     font-family: 'Press Start 2P', monospace;
+
     cursor: none;
 }
 
 #game-container {
+
     position: relative;
+
     width: min(96vw, 1100px);
+
     aspect-ratio: 16 / 10;
-    background: #080810;
+
     overflow: hidden;
 
-    border: 4px solid #30303a;
+    background: #05050a;
+
+    border: 4px solid #292930;
 
     box-shadow:
-        0 0 0 2px #080808,
-        0 0 35px rgba(255, 0, 0, .18),
-        inset 0 0 60px rgba(0,0,0,.8);
+        0 0 0 2px #000,
+        0 0 45px rgba(180,0,0,.18);
+
 }
 
 canvas {
+
+    display: block;
+
     width: 100%;
     height: 100%;
-    display: block;
 
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+
 }
 
-/* --------------------------------------------------
-   TITLE
--------------------------------------------------- */
+/* =========================================================
+   TITLE SCREEN
+========================================================= */
 
 #title-screen {
+
     position: absolute;
+
     inset: 0;
 
+    z-index: 50;
+
     display: flex;
+
     flex-direction: column;
+
     justify-content: center;
+
     align-items: center;
+
+    text-align: center;
 
     background:
         radial-gradient(
             circle at center,
-            rgba(45,0,0,.35),
-            rgba(0,0,0,.97) 70%
+            rgba(70,0,0,.3),
+            rgba(0,0,0,.98) 70%
         );
 
-    z-index: 50;
 }
 
 #title-screen h1 {
-    text-align: center;
 
-    color: #e00000;
+    color: #d90000;
 
     font-size: clamp(18px, 3vw, 34px);
+
     line-height: 1.7;
 
     text-shadow:
-        3px 3px 0 #280000,
-        0 0 12px #ff0000,
-        0 0 35px rgba(255,0,0,.8);
+        3px 3px 0 #260000,
+        0 0 15px #ff0000,
+        0 0 40px rgba(255,0,0,.7);
 
-    animation: titlePulse 2.5s infinite;
+    animation: titlePulse 3s infinite;
+
 }
 
-#title-screen .subtitle {
-    margin-top: 22px;
+.subtitle {
 
-    color: #777;
-    font-size: 9px;
-    letter-spacing: 2px;
+    margin-top: 20px;
+
+    color: #555;
+
+    font-size: 8px;
+
+    letter-spacing: 3px;
+
 }
 
-#title-screen .start {
-    margin-top: 40px;
+.start {
 
-    color: #eee;
-    font-size: 12px;
+    margin-top: 45px;
+
+    color: #ddd;
+
+    font-size: 11px;
 
     animation: blink 1s steps(2) infinite;
+
 }
 
-#title-screen .controls {
+.hint {
+
     margin-top: 25px;
 
-    color: #444;
+    color: #333;
+
     font-size: 7px;
+
 }
 
-/* --------------------------------------------------
-   STORY UI
--------------------------------------------------- */
+/* =========================================================
+   STORY TEXT
+========================================================= */
 
 #story-box {
+
     position: absolute;
 
-    left: 5%;
-    right: 5%;
-    bottom: 20px;
+    left: 6%;
+    right: 6%;
 
-    min-height: 65px;
+    bottom: 8px;
 
-    padding: 14px 20px;
+    min-height: 48px;
+
+    padding:
+        8px
+        18px;
 
     background:
         linear-gradient(
             rgba(0,0,0,.88),
-            rgba(5,5,10,.92)
+            rgba(5,5,8,.94)
         );
 
-    border:
-        2px solid rgba(150,150,150,.25);
+    border-top:
+        2px solid rgba(180,180,180,.18);
+
+    border-bottom:
+        2px solid rgba(180,180,180,.08);
 
     box-shadow:
-        0 0 15px rgba(0,0,0,.8),
-        inset 0 0 15px rgba(255,0,0,.04);
+        0 -8px 25px rgba(0,0,0,.65);
 
-    z-index: 20;
+    z-index: 25;
+
+    pointer-events: none;
+
 }
 
 #story-text {
+
     color: #ddd;
 
-    font-size: clamp(7px, 1vw, 11px);
-    line-height: 1.8;
-
     text-align: center;
+
+    font-size: clamp(6px, .85vw, 10px);
+
+    line-height: 1.65;
+
+    min-height: 22px;
 
     text-shadow:
         2px 2px #000;
 
-    min-height: 25px;
 }
 
 #scene-counter {
+
     position: absolute;
 
-    top: 10px;
-    left: 12px;
+    top: 8px;
+    left: 10px;
+
+    z-index: 30;
 
     color: #555;
+
     font-size: 6px;
 
-    z-index: 21;
 }
 
-/* --------------------------------------------------
-   MUSIC
--------------------------------------------------- */
-
-#music-toggle {
-    position: absolute;
-
-    top: 12px;
-    right: 12px;
-
-    z-index: 60;
-
-    background: rgba(5,5,8,.85);
-
-    color: #aaa;
-
-    border: 1px solid #444;
-
-    padding: 8px 10px;
-
-    font-family: 'Press Start 2P', monospace;
-
-    font-size: 7px;
-
-    cursor: pointer;
-}
-
-#music-toggle:hover {
-    color: #fff;
-    border-color: #888;
-}
-
-/* --------------------------------------------------
+/* =========================================================
    MORAL
--------------------------------------------------- */
+========================================================= */
 
 #moral {
+
     position: absolute;
 
     inset: 0;
 
-    display: none;
+    z-index: 60;
 
-    justify-content: center;
-    align-items: center;
+    display: none;
 
     flex-direction: column;
 
-    z-index: 45;
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
 
     background:
         radial-gradient(
             circle,
-            rgba(50,0,0,.45),
-            rgba(0,0,0,.97)
+            rgba(70,0,0,.35),
+            rgba(0,0,0,.98)
         );
-
-    text-align: center;
 
     color: #e00000;
 
-    font-size: clamp(10px, 1.5vw, 17px);
+    font-size: clamp(9px, 1.4vw, 16px);
 
     line-height: 2;
 
     text-shadow:
-        0 0 10px #f00,
-        0 0 30px #700;
+        0 0 12px #ff0000,
+        0 0 30px #600;
+
 }
 
-#moral .restart {
-    margin-top: 30px;
+.restart {
 
-    color: #777;
+    margin-top: 35px;
+
+    color: #666;
 
     font-size: 8px;
 
     animation: blink 1.2s steps(2) infinite;
+
 }
 
-/* --------------------------------------------------
-   ANIMATIONS
--------------------------------------------------- */
-
 @keyframes blink {
-    0%, 45% {
+
+    0%,45% {
         opacity: 1;
     }
 
-    46%, 100% {
+    46%,100% {
         opacity: 0;
     }
+
 }
 
 @keyframes titlePulse {
-    0%, 100% {
+
+    0%,100% {
         transform: scale(1);
         filter: brightness(1);
     }
 
     50% {
-        transform: scale(1.025);
-        filter: brightness(1.35);
+        transform: scale(1.03);
+        filter: brightness(1.4);
     }
+
 }
+
 </style>
 </head>
 
@@ -287,59 +306,63 @@ canvas {
 
 <div id="game-container">
 
-    <canvas id="gameCanvas"></canvas>
+<canvas id="gameCanvas"></canvas>
 
-    <div id="scene-counter">
-        SCENE 01
-    </div>
+<div id="scene-counter">
+SCENE 01
+</div>
 
-    <div id="story-box">
-        <div id="story-text">
-            Loading...
-        </div>
-    </div>
+<div id="story-box">
 
-    <button id="music-toggle">
-        MUSIC: ON
-    </button>
+<div id="story-text">
+Loading...
+</div>
 
-    <div id="moral">
+</div>
 
-        <div>
-            MORAL OF THE STORY:
-            <br><br>
-            DON'T TRUST EVEN YOURSELF.
-            <br>
-            THE DARKNESS LIES WITHIN US ALL.
-        </div>
+<div id="moral">
 
-        <div class="restart">
-            CLICK TO RESTART
-        </div>
+<div>
 
-    </div>
+MORAL OF THE STORY:
 
-    <div id="title-screen">
+<br><br>
 
-        <h1>
-            DARK PIXEL TALE
-            <br>
-            THE SKULL & THE HARE
-        </h1>
+DON'T TRUST EVEN YOURSELF.
 
-        <div class="subtitle">
-            A DARK FAIRY TALE
-        </div>
+<br>
 
-        <div class="start">
-            CLICK TO BEGIN
-        </div>
+THE DARKNESS LIES WITHIN US ALL.
 
-        <div class="controls">
-            MUSIC • PIXEL ART • CINEMATIC STORY
-        </div>
+</div>
 
-    </div>
+<div class="restart">
+CLICK TO RESTART
+</div>
+
+</div>
+
+<div id="title-screen">
+
+<h1>
+DARK PIXEL TALE
+<br>
+THE SKULL & THE HARE
+</h1>
+
+<div class="subtitle">
+A DARK FAIRY TALE
+</div>
+
+<div class="start">
+CLICK TO BEGIN
+</div>
+
+<div class="hint">
+A CINEMATIC PIXEL STORY
+</div>
+
+</div>
 
 </div>
 
@@ -349,8 +372,11 @@ canvas {
    CANVAS
 ========================================================= */
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+const canvas =
+document.getElementById("gameCanvas");
+
+const ctx =
+canvas.getContext("2d");
 
 canvas.width = 960;
 canvas.height = 600;
@@ -362,11 +388,17 @@ ctx.imageSmoothingEnabled = false;
    DOM
 ========================================================= */
 
-const titleScreen = document.getElementById("title-screen");
-const storyText = document.getElementById("story-text");
-const sceneCounter = document.getElementById("scene-counter");
-const moral = document.getElementById("moral");
-const musicToggle = document.getElementById("music-toggle");
+const titleScreen =
+document.getElementById("title-screen");
+
+const storyText =
+document.getElementById("story-text");
+
+const sceneCounter =
+document.getElementById("scene-counter");
+
+const moral =
+document.getElementById("moral");
 
 
 /* =========================================================
@@ -382,17 +414,26 @@ let sceneTimer = 0;
 let lastTime = 0;
 
 let cameraX = 0;
+
+let cameraTargetX = 0;
+
 let cameraZoom = 1;
 
-let screenShake = 0;
+let cameraTargetZoom = 1;
+
+let cameraY = 0;
+
+let cameraTargetY = 0;
 
 let fade = 1;
+
+let screenShake = 0;
 
 let hareKilled = false;
 
 let moralShown = false;
 
-let musicOn = true;
+let cinematicFlash = 0;
 
 
 /* =========================================================
@@ -400,10 +441,10 @@ let musicOn = true;
 ========================================================= */
 
 const skull = {
-    x: 90,
-    y: 390,
 
-    targetX: 90,
+    x: 90,
+
+    y: 390,
 
     walkFrame: 0,
 
@@ -411,14 +452,17 @@ const skull = {
 
     jump: 0,
 
-    attack: 0
+    attack: 0,
+
+    breathing: 0
+
 };
 
 const hare = {
-    x: 100,
-    y: 390,
 
-    targetX: 100,
+    x: 110,
+
+    y: 390,
 
     walkFrame: 0,
 
@@ -428,7 +472,8 @@ const hare = {
 
     headless: false,
 
-    blink: 0
+    breathing: 0
+
 };
 
 
@@ -438,74 +483,113 @@ const hare = {
 
 const particles = [];
 
-function createParticle(x, y, type = "dust") {
+
+function particle(
+    x,
+    y,
+    type = "dust"
+) {
 
     particles.push({
+
         x,
         y,
 
-        vx: (Math.random() - .5) * 1.5,
+        vx:
+            (Math.random()-.5) *
+            (type === "blood" ? 3 : 1.2),
 
-        vy: type === "blood"
-            ? Math.random() * -2 - .5
-            : Math.random() * -.5,
+        vy:
+            type === "blood"
+                ? -Math.random()*3-.5
+                : -Math.random()*.7,
 
         life: 1,
 
-        size: Math.random() < .7 ? 2 : 3,
+        size:
+            Math.random() < .7
+                ? 2
+                : 3,
 
         type
+
     });
+
 }
 
 
 function updateParticles(dt) {
 
-    for (let i = particles.length - 1; i >= 0; i--) {
+    for (
+        let i = particles.length-1;
+        i >= 0;
+        i--
+    ) {
 
-        const p = particles[i];
+        const p =
+            particles[i];
 
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        p.x +=
+            p.vx * dt;
 
-        if (p.type === "dust") {
-            p.vy += .01 * dt;
+        p.y +=
+            p.vy * dt;
+
+        if (
+            p.type === "blood"
+        ) {
+
+            p.vy +=
+                .05 * dt;
+
+        } else {
+
+            p.vy +=
+                .01 * dt;
+
         }
 
-        if (p.type === "blood") {
-            p.vy += .04 * dt;
+        p.life -=
+            .012 * dt;
+
+        if (
+            p.life <= 0
+        ) {
+
+            particles.splice(i,1);
+
         }
 
-        p.life -= .015 * dt;
-
-        if (p.life <= 0) {
-            particles.splice(i, 1);
-        }
     }
+
 }
 
 
 function drawParticles() {
 
-    for (const p of particles) {
+    for (
+        const p of particles
+    ) {
 
-        ctx.globalAlpha = p.life;
+        ctx.globalAlpha =
+            p.life;
 
-        if (p.type === "blood") {
-            ctx.fillStyle = "#b00000";
-        } else {
-            ctx.fillStyle = "#555";
-        }
+        ctx.fillStyle =
+            p.type === "blood"
+                ? "#a80000"
+                : "#57515b";
 
         ctx.fillRect(
-            Math.floor(p.x),
+            Math.floor(p.x-cameraX),
             Math.floor(p.y),
             p.size,
             p.size
         );
+
     }
 
     ctx.globalAlpha = 1;
+
 }
 
 
@@ -513,7 +597,13 @@ function drawParticles() {
    PIXEL HELPERS
 ========================================================= */
 
-function rect(x, y, w, h, color) {
+function rect(
+    x,
+    y,
+    w,
+    h,
+    color
+) {
 
     ctx.fillStyle = color;
 
@@ -523,49 +613,85 @@ function rect(x, y, w, h, color) {
         Math.floor(w),
         Math.floor(h)
     );
+
 }
 
 
-function pixelCircle(cx, cy, radius, color) {
+function circle(
+    x,
+    y,
+    r,
+    color
+) {
 
     ctx.fillStyle = color;
 
-    for (let y = -radius; y <= radius; y += 3) {
+    for (
+        let yy=-r;
+        yy<=r;
+        yy+=3
+    ) {
 
-        for (let x = -radius; x <= radius; x += 3) {
+        for (
+            let xx=-r;
+            xx<=r;
+            xx+=3
+        ) {
 
-            if (x*x + y*y <= radius*radius) {
+            if (
+                xx*xx +
+                yy*yy <=
+                r*r
+            ) {
 
-                ctx.fillRect(
-                    Math.floor(cx + x),
-                    Math.floor(cy + y),
+                rect(
+                    x+xx,
+                    y+yy,
                     3,
-                    3
+                    3,
+                    color
                 );
+
             }
+
         }
+
     }
+
 }
 
 
 /* =========================================================
-   SKY
+   BACKGROUND
 ========================================================= */
 
 function drawSky() {
 
-    const gradient = ctx.createLinearGradient(
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            canvas.height
+        );
+
+    gradient.addColorStop(
         0,
-        0,
-        0,
-        canvas.height
+        "#02020b"
     );
 
-    gradient.addColorStop(0, "#03030d");
-    gradient.addColorStop(.45, "#101027");
-    gradient.addColorStop(1, "#1c1720");
+    gradient.addColorStop(
+        .45,
+        "#0d1025"
+    );
 
-    ctx.fillStyle = gradient;
+    gradient.addColorStop(
+        1,
+        "#20151d"
+    );
+
+    ctx.fillStyle =
+        gradient;
 
     ctx.fillRect(
         0,
@@ -573,6 +699,7 @@ function drawSky() {
         canvas.width,
         canvas.height
     );
+
 }
 
 
@@ -582,28 +709,35 @@ function drawSky() {
 
 function drawStars() {
 
-    const seed = 1234;
+    for (
+        let i=0;
+        i<100;
+        i++
+    ) {
 
-    for (let i = 0; i < 80; i++) {
+        let x =
+            (i*173)
+            -
+            cameraX*.05;
 
-        const x =
-            ((i * 173 + seed) % 1200)
-            - cameraX * .1;
+        x =
+            ((x%1100)+1100)%1100;
 
         const y =
-            (i * 71) % 260;
-
-        const size =
-            i % 7 === 0 ? 2 : 1;
+            (i*71)%270;
 
         rect(
-            ((x % canvas.width) + canvas.width) % canvas.width,
+            x,
             y,
-            size,
-            size,
-            i % 9 === 0 ? "#777" : "#454550"
+            i%8===0 ? 2 : 1,
+            i%8===0 ? 2 : 1,
+            i%9===0
+                ? "#777"
+                : "#3e3e4c"
         );
+
     }
+
 }
 
 
@@ -613,22 +747,25 @@ function drawStars() {
 
 function drawMoon() {
 
-    const moonX = 780 - cameraX * .05;
-    const moonY = 105;
+    const x =
+        780 -
+        cameraX*.04;
+
+    const y = 100;
 
     const glow =
         ctx.createRadialGradient(
-            moonX,
-            moonY,
+            x,
+            y,
             20,
-            moonX,
-            moonY,
-            130
+            x,
+            y,
+            140
         );
 
     glow.addColorStop(
         0,
-        "rgba(150,0,0,.25)"
+        "rgba(170,0,0,.28)"
     );
 
     glow.addColorStop(
@@ -636,59 +773,59 @@ function drawMoon() {
         "rgba(0,0,0,0)"
     );
 
-    ctx.fillStyle = glow;
+    ctx.fillStyle =
+        glow;
 
     ctx.beginPath();
 
     ctx.arc(
-        moonX,
-        moonY,
-        130,
+        x,
+        y,
+        140,
         0,
-        Math.PI * 2
+        Math.PI*2
     );
 
     ctx.fill();
 
-    pixelCircle(
-        moonX,
-        moonY,
-        42,
-        "#8d3030"
+    circle(
+        x,
+        y,
+        43,
+        "#8b2e32"
     );
 
-    pixelCircle(
-        moonX - 8,
-        moonY - 5,
-        37,
-        "#a63b3b"
-    );
-
-    /* Moon craters */
-
-    rect(
-        moonX - 20,
-        moonY - 10,
-        9,
-        5,
-        "#702727"
+    circle(
+        x-8,
+        y-5,
+        38,
+        "#a43b3b"
     );
 
     rect(
-        moonX + 10,
-        moonY + 12,
+        x-20,
+        y-13,
+        10,
+        6,
+        "#712528"
+    );
+
+    rect(
+        x+12,
+        y+13,
+        8,
         7,
-        7,
-        "#762828"
+        "#712528"
     );
 
     rect(
-        moonX + 18,
-        moonY - 18,
-        5,
-        5,
-        "#6d2525"
+        x+19,
+        y-20,
+        6,
+        6,
+        "#712528"
     );
+
 }
 
 
@@ -698,29 +835,46 @@ function drawMoon() {
 
 function drawMountains() {
 
-    ctx.fillStyle = "#0b0b18";
+    ctx.fillStyle =
+        "#090914";
 
     ctx.beginPath();
 
-    ctx.moveTo(0, 350);
+    ctx.moveTo(
+        0,
+        370
+    );
 
-    for (let x = 0; x <= canvas.width; x += 70) {
+    for (
+        let x=0;
+        x<=canvas.width;
+        x+=60
+    ) {
 
-        const height =
+        const h =
             70 +
-            Math.sin(x * .018) * 50 +
-            Math.sin(x * .041) * 25;
+            Math.sin(x*.02)*45 +
+            Math.sin(x*.05)*25;
 
         ctx.lineTo(
             x,
-            350 - height
+            370-h
         );
+
     }
 
-    ctx.lineTo(canvas.width, 600);
-    ctx.lineTo(0, 600);
+    ctx.lineTo(
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.lineTo(
+        0,
+        canvas.height
+    );
 
     ctx.fill();
+
 }
 
 
@@ -728,78 +882,97 @@ function drawMountains() {
    TREES
 ========================================================= */
 
-function drawTree(x, y, scale = 1, layer = 0) {
+function tree(
+    worldX,
+    scale,
+    layer
+) {
 
-    x -= cameraX * (.25 + layer * .08);
+    const x =
+        worldX -
+        cameraX *
+        layer;
 
-    const trunk = 22 * scale;
-
-    rect(
-        x - trunk / 2,
-        y - 180 * scale,
-        trunk,
-        180 * scale,
-        "#151016"
-    );
-
-    /* Branches */
+    const y = 405;
 
     rect(
-        x - 45 * scale,
-        y - 145 * scale,
-        90 * scale,
-        12 * scale,
-        "#121018"
+        x-9*scale,
+        y-190*scale,
+        18*scale,
+        190*scale,
+        "#171218"
     );
 
     rect(
-        x - 35 * scale,
-        y - 110 * scale,
-        70 * scale,
-        10 * scale,
-        "#121018"
+        x-55*scale,
+        y-150*scale,
+        110*scale,
+        9*scale,
+        "#141017"
     );
 
-    /* Crown */
+    rect(
+        x-42*scale,
+        y-115*scale,
+        84*scale,
+        8*scale,
+        "#141017"
+    );
 
-    pixelCircle(
+    circle(
         x,
-        y - 190 * scale,
-        58 * scale,
-        "#0b0a12"
+        y-205*scale,
+        60*scale,
+        "#09090f"
     );
 
-    pixelCircle(
-        x - 35 * scale,
-        y - 165 * scale,
-        35 * scale,
-        "#0d0b12"
+    circle(
+        x-40*scale,
+        y-175*scale,
+        40*scale,
+        "#0b0a10"
     );
 
-    pixelCircle(
-        x + 35 * scale,
-        y - 165 * scale,
-        38 * scale,
-        "#0d0b12"
+    circle(
+        x+40*scale,
+        y-170*scale,
+        45*scale,
+        "#0b0a10"
     );
 
-    /* Dead branches */
+}
 
-    rect(
-        x - 70 * scale,
-        y - 200 * scale,
-        55 * scale,
-        5 * scale,
-        "#17131a"
-    );
 
-    rect(
-        x + 20 * scale,
-        y - 215 * scale,
-        50 * scale,
-        5 * scale,
-        "#17131a"
-    );
+function drawTrees() {
+
+    for (
+        let i=0;
+        i<14;
+        i++
+    ) {
+
+        tree(
+            i*110+20,
+            .7,
+            .35
+        );
+
+    }
+
+    for (
+        let i=0;
+        i<12;
+        i++
+    ) {
+
+        tree(
+            i*130+70,
+            1,
+            .55
+        );
+
+    }
+
 }
 
 
@@ -811,64 +984,41 @@ function drawGround() {
 
     rect(
         0,
-        390,
+        400,
         canvas.width,
-        210,
-        "#101014"
+        200,
+        "#111015"
     );
 
-    /* Ground layers */
+    for (
+        let i=0;
+        i<130;
+        i++
+    ) {
 
-    rect(
-        0,
-        410,
-        canvas.width,
-        3,
-        "#242029"
-    );
+        let x =
+            i*83 -
+            cameraX*.75;
 
-    for (let i = 0; i < 100; i++) {
-
-        const x =
-            ((i * 97) % 1200)
-            - cameraX * .7;
+        x =
+            ((x%1050)+1050)%1050;
 
         const y =
-            420 +
-            ((i * 53) % 170);
-
-        const size =
-            i % 5 === 0 ? 5 : 2;
+            415 +
+            (i*37)%170;
 
         rect(
-            ((x % canvas.width) + canvas.width) % canvas.width,
+            x,
             y,
-            size,
+            i%5===0 ? 5 : 2,
             2,
-            i % 3 === 0 ? "#29252c" : "#1c1a20"
+            i%3===0
+                ? "#2b252d"
+                : "#1e1b21"
         );
+
     }
 
-    /* Grass */
-
-    for (let i = 0; i < 70; i++) {
-
-        const x =
-            ((i * 137) % 1100)
-            - cameraX * .8;
-
-        const y =
-            410 +
-            ((i * 31) % 20);
-
-        rect(
-            ((x % canvas.width) + canvas.width) % canvas.width,
-            y,
-            2,
-            7,
-            "#27232b"
-        );
-    }
 }
 
 
@@ -876,48 +1026,66 @@ function drawGround() {
    GRAVESTONES
 ========================================================= */
 
-function drawGravestone(x, y, size = 1) {
+function gravestone(
+    worldX,
+    size=1
+) {
 
-    x -= cameraX * .8;
+    const x =
+        worldX -
+        cameraX*.8;
+
+    const y = 430;
 
     rect(
-        x - 17 * size,
-        y - 35 * size,
-        34 * size,
-        35 * size,
-        "#34313a"
+        x-17*size,
+        y-35*size,
+        34*size,
+        35*size,
+        "#38343d"
     );
 
-    pixelCircle(
+    circle(
         x,
-        y - 35 * size,
-        17 * size,
-        "#34313a"
+        y-35*size,
+        17*size,
+        "#38343d"
     );
 
     rect(
-        x - 12 * size,
-        y - 18 * size,
-        24 * size,
-        3 * size,
+        x-11*size,
+        y-18*size,
+        22*size,
+        3*size,
         "#211e25"
     );
 
     rect(
-        x - 3 * size,
-        y - 27 * size,
-        6 * size,
-        18 * size,
-        "#17151b"
+        x-3*size,
+        y-28*size,
+        6*size,
+        18*size,
+        "#211e25"
     );
 
-    rect(
-        x - 8 * size,
-        y - 22 * size,
-        16 * size,
-        5 * size,
-        "#17151b"
-    );
+}
+
+
+function drawGraveyard() {
+
+    for (
+        let i=0;
+        i<12;
+        i++
+    ) {
+
+        gravestone(
+            i*115+40,
+            .7+(i%3)*.12
+        );
+
+    }
+
 }
 
 
@@ -927,96 +1095,196 @@ function drawGravestone(x, y, size = 1) {
 
 function drawBoneBridge() {
 
-    const startX = 350 - cameraX;
+    const start =
+        300 -
+        cameraX;
 
-    for (let i = 0; i < 15; i++) {
+    for (
+        let i=0;
+        i<18;
+        i++
+    ) {
 
-        const x = startX + i * 30;
+        const x =
+            start+i*30;
+
+        const wobble =
+            Math.sin(
+                performance.now()*.003+i
+            )*2;
 
         rect(
             x,
-            390 + Math.sin(i) * 3,
+            390+wobble,
             25,
             9,
-            "#b8ad99"
+            "#bcb09b"
         );
 
-        pixelCircle(
-            x + 25,
-            394,
+        circle(
+            x+25,
+            394+wobble,
             7,
-            "#d0c3a9"
+            "#d1c3a7"
         );
 
         rect(
-            x + 8,
-            405,
+            x+8,
+            400,
             4,
-            40,
-            "#665f55"
-        );
-
-        rect(
-            x + 19,
-            405,
-            4,
-            40,
-            "#665f55"
-        );
-    }
-
-    /* Bones underneath */
-
-    for (let i = 0; i < 8; i++) {
-
-        rect(
-            startX + i * 60,
-            450 + (i % 3) * 10,
             50,
-            5,
-            "#554e48"
+            "#655d52"
         );
+
+        rect(
+            x+19,
+            400,
+            4,
+            50,
+            "#655d52"
+        );
+
     }
+
 }
 
 
 /* =========================================================
-   FOREGROUND FOG
+   FINISH LINE
 ========================================================= */
 
-function drawFog() {
+function finishLine() {
 
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            300,
-            0,
-            600
+    const x =
+        820-cameraX;
+
+    rect(
+        x,
+        300,
+        5,
+        120,
+        "#d4d4d4"
+    );
+
+    for (
+        let i=0;
+        i<8;
+        i++
+    ) {
+
+        rect(
+            x+5,
+            305+i*13,
+            30,
+            13,
+            i%2===0
+                ? "#eee"
+                : "#8d0000"
         );
 
-    gradient.addColorStop(
+    }
+
+}
+
+
+/* =========================================================
+   SPIRIT
+========================================================= */
+
+function spirit() {
+
+    const x =
+        660-cameraX;
+
+    const y = 285;
+
+    const pulse =
+        Math.sin(
+            performance.now()*.004
+        )*5;
+
+    const glow =
+        ctx.createRadialGradient(
+            x,
+            y,
+            5,
+            x,
+            y,
+            110
+        );
+
+    glow.addColorStop(
         0,
-        "rgba(20,20,30,0)"
+        "rgba(110,0,150,.3)"
     );
 
-    gradient.addColorStop(
-        .7,
-        "rgba(10,10,15,.25)"
-    );
-
-    gradient.addColorStop(
+    glow.addColorStop(
         1,
-        "rgba(5,5,8,.7)"
+        "rgba(0,0,0,0)"
     );
 
-    ctx.fillStyle = gradient;
+    ctx.fillStyle =
+        glow;
 
-    ctx.fillRect(
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        110,
         0,
-        300,
-        canvas.width,
-        300
+        Math.PI*2
     );
+
+    ctx.fill();
+
+    circle(
+        x,
+        y+pulse,
+        25,
+        "#30223d"
+    );
+
+    rect(
+        x-23,
+        y+10,
+        46,
+        45,
+        "#24192c"
+    );
+
+    rect(
+        x-13,
+        y-4,
+        8,
+        5,
+        "#c000ff"
+    );
+
+    rect(
+        x+5,
+        y-4,
+        8,
+        5,
+        "#c000ff"
+    );
+
+    rect(
+        x-50,
+        y+15,
+        27,
+        5,
+        "#3d284b"
+    );
+
+    rect(
+        x+23,
+        y+15,
+        27,
+        5,
+        "#3d284b"
+    );
+
 }
 
 
@@ -1027,140 +1295,127 @@ function drawFog() {
 function drawSkull() {
 
     let x =
-        skull.x -
-        cameraX;
+        skull.x-cameraX;
 
     let y =
-        skull.y -
-        skull.jump;
-
-    const scale = cameraZoom;
+        skull.y-skull.jump;
 
     x =
-        (x - 480) * scale +
+        (x-480) *
+        cameraZoom +
         480;
 
     y =
-        (y - 350) * scale +
+        (y-350) *
+        cameraZoom +
         350;
 
     ctx.save();
 
     /* Shadow */
 
-    ctx.fillStyle = "rgba(0,0,0,.5)";
+    ctx.fillStyle =
+        "rgba(0,0,0,.55)";
 
     ctx.fillRect(
-        x - 8,
-        y + 42,
-        45,
-        6
+        x-10,
+        y+47,
+        55,
+        7
     );
 
     /* Cloak */
 
     rect(
-        x - 5,
-        y + 5,
-        42,
+        x-6,
+        y+5,
+        43,
         50,
-        "#292832"
+        "#2a2933"
     );
 
     rect(
-        x - 10,
-        y + 17,
-        52,
-        34,
-        "#202029"
+        x-11,
+        y+18,
+        53,
+        36,
+        "#1e1e27"
     );
 
     /* Hood */
 
     rect(
-        x - 7,
-        y - 9,
-        45,
-        17,
-        "#34343f"
+        x-8,
+        y-10,
+        46,
+        18,
+        "#353540"
     );
 
-    pixelCircle(
-        x + 15,
-        y - 4,
-        24,
-        "#34343f"
+    circle(
+        x+15,
+        y-3,
+        25,
+        "#353540"
     );
 
-    /* Hood shadow */
+    /* Face shadow */
 
     rect(
-        x - 2,
-        y,
-        35,
-        7,
-        "#17171e"
+        x-1,
+        y+1,
+        34,
+        8,
+        "#16161d"
     );
 
     /* Skull */
 
     rect(
-        x + 1,
-        y + 2,
+        x+1,
+        y+2,
         31,
-        31,
-        "#c9c7bd"
+        32,
+        "#cbc8bc"
     );
 
-    /* Skull highlights */
-
     rect(
-        x + 6,
-        y + 4,
-        21,
+        x+5,
+        y+4,
+        23,
         3,
-        "#f1eee0"
-    );
-
-    rect(
-        x + 3,
-        y + 12,
-        4,
-        14,
-        "#aaa89e"
+        "#f0ede0"
     );
 
     /* Eyes */
 
     rect(
-        x + 6,
-        y + 11,
+        x+6,
+        y+11,
         8,
         8,
-        "#08080a"
+        "#050506"
     );
 
     rect(
-        x + 19,
-        y + 11,
+        x+19,
+        y+11,
         8,
         8,
-        "#08080a"
+        "#050506"
     );
 
-    /* Red eyes */
-
     rect(
-        x + 8,
-        y + 13,
+        x+8,
+        y+13,
         4,
         3,
         "#ff0000"
     );
 
     rect(
-        x + 21,
-        y + 13,
+        x+21,
+        y+13,
         4,
         3,
         "#ff0000"
@@ -1169,18 +1424,18 @@ function drawSkull() {
     /* Nose */
 
     rect(
-        x + 14,
-        y + 19,
+        x+14,
+        y+19,
         6,
         5,
-        "#222"
+        "#25242a"
     );
 
     /* Jaw */
 
     rect(
-        x + 5,
-        y + 25,
+        x+5,
+        y+25,
         24,
         9,
         "#d8d5c9"
@@ -1188,81 +1443,93 @@ function drawSkull() {
 
     /* Teeth */
 
-    for (let i = 0; i < 5; i++) {
+    for (
+        let i=0;
+        i<5;
+        i++
+    ) {
 
         rect(
-            x + 8 + i * 4,
-            y + 26,
+            x+8+i*4,
+            y+26,
             3,
             6,
-            "#26252a"
+            "#27262b"
         );
+
     }
 
     /* Arms */
 
     const swing =
-        skull.walkFrame ? 3 : -3;
+        skull.walkFrame
+            ? 3
+            : -3;
 
     rect(
-        x - 12,
-        y + 28 + swing,
+        x-12,
+        y+29+swing,
         10,
         25,
-        "#262630"
+        "#25242e"
     );
 
     rect(
-        x + 34,
-        y + 28 - swing,
+        x+34,
+        y+29-swing,
         10,
         25,
-        "#262630"
+        "#25242e"
     );
 
-    /* Blade */
+    /* Sword */
 
-    if (skull.attack > 0) {
+    if (
+        skull.attack > 0
+    ) {
 
         ctx.save();
 
         ctx.translate(
-            x + 37,
-            y + 32
+            x+37,
+            y+33
         );
 
         ctx.rotate(
-            -1.2 + skull.attack
+            -1.25+
+            skull.attack
         );
 
         rect(
             0,
             0,
             7,
-            65,
-            "#bfc2c7"
+            68,
+            "#bfc4c9"
         );
 
         rect(
             0,
             0,
             3,
-            65,
+            68,
             "#ffffff"
         );
 
         rect(
-            -3,
-            60,
-            14,
-            5,
-            "#5b4a36"
+            -4,
+            62,
+            15,
+            6,
+            "#614c35"
         );
 
         ctx.restore();
+
     }
 
     ctx.restore();
+
 }
 
 
@@ -1273,48 +1540,52 @@ function drawSkull() {
 function drawHare() {
 
     let x =
-        hare.x -
-        cameraX;
+        hare.x-cameraX;
 
     let y =
         hare.y;
 
+    ctx.save();
+
     /* Shadow */
 
-    ctx.fillStyle = "rgba(0,0,0,.45)";
+    ctx.fillStyle =
+        "rgba(0,0,0,.45)";
 
     ctx.fillRect(
-        x - 5,
-        y + 45,
-        50,
-        6
+        x-5,
+        y+48,
+        52,
+        7
     );
 
     /* Body */
 
     rect(
         x,
-        y + 14,
+        y+14,
         38,
         32,
-        "#81482d"
+        "#81472d"
     );
 
     rect(
-        x + 5,
-        y + 19,
+        x+5,
+        y+19,
         29,
         20,
-        "#9b5835"
+        "#9d5835"
     );
 
-    if (!hare.headless) {
+    if (
+        !hare.headless
+    ) {
 
         /* Head */
 
         rect(
-            x + 4,
-            y - 5,
+            x+4,
+            y-5,
             31,
             25,
             "#a65d38"
@@ -1323,347 +1594,246 @@ function drawHare() {
         /* Ears */
 
         rect(
-            x + 5,
-            y - 33,
+            x+5,
+            y-34,
             8,
-            30,
+            31,
             "#82462e"
         );
 
         rect(
-            x + 25,
-            y - 36,
+            x+25,
+            y-37,
             8,
-            33,
+            34,
             "#82462e"
         );
 
-        /* Inner ears */
-
         rect(
-            x + 8,
-            y - 28,
+            x+8,
+            y-29,
             3,
-            20,
+            21,
             "#d78982"
         );
 
         rect(
-            x + 28,
-            y - 31,
+            x+28,
+            y-32,
             3,
             22,
             "#d78982"
         );
 
-        /* Face */
-
-        rect(
-            x + 9,
-            y + 3,
-            7,
-            7,
-            "#080808"
-        );
-
-        rect(
-            x + 24,
-            y + 3,
-            7,
-            7,
-            "#080808"
-        );
-
         /* Eyes */
 
         rect(
-            x + 11,
-            y + 5,
-            3,
-            2,
-            "#ffdddd"
+            x+9,
+            y+3,
+            7,
+            7,
+            "#080808"
         );
 
         rect(
-            x + 26,
-            y + 5,
+            x+24,
+            y+3,
+            7,
+            7,
+            "#080808"
+        );
+
+        rect(
+            x+11,
+            y+5,
             3,
             2,
-            "#ffdddd"
+            "#fff0f0"
+        );
+
+        rect(
+            x+26,
+            y+5,
+            3,
+            2,
+            "#fff0f0"
         );
 
         /* Nose */
 
         rect(
-            x + 17,
-            y + 13,
+            x+17,
+            y+13,
             7,
             4,
-            "#df7373"
+            "#e07171"
         );
 
         /* Mouth */
 
         rect(
-            x + 17,
-            y + 17,
+            x+17,
+            y+17,
             8,
             2,
-            "#42201d"
+            "#48211e"
         );
 
     } else {
 
-        /* Blood */
-
         rect(
-            x + 7,
-            y - 5,
+            x+7,
+            y-5,
             27,
             12,
-            "#720000"
+            "#680000"
         );
 
         rect(
-            x + 11,
-            y + 2,
+            x+11,
+            y+1,
             18,
-            5,
+            6,
             "#c00000"
         );
+
     }
 
     /* Tail */
 
-    pixelCircle(
-        x + 39,
-        y + 22,
+    circle(
+        x+40,
+        y+22,
         9,
-        "#d5d0c7"
+        "#d8d3ca"
     );
 
     /* Legs */
 
     const leg =
-        hare.walkFrame ? 3 : -3;
+        hare.walkFrame
+            ? 3
+            : -3;
 
     rect(
-        x + 5,
-        y + 40 + leg,
+        x+5,
+        y+40+leg,
         9,
         14,
-        "#713d29"
+        "#703d29"
     );
 
     rect(
-        x + 25,
-        y + 40 - leg,
+        x+25,
+        y+40-leg,
         9,
         14,
-        "#713d29"
+        "#703d29"
     );
+
+    ctx.restore();
+
 }
 
 
 /* =========================================================
-   FINISH LINE
-========================================================= */
-
-function drawFinishLine() {
-
-    const x =
-        820 -
-        cameraX;
-
-    rect(
-        x,
-        310,
-        5,
-        105,
-        "#c8c8c8"
-    );
-
-    for (let i = 0; i < 8; i++) {
-
-        rect(
-            x + 5,
-            315 + i * 12,
-            28,
-            12,
-            i % 2 === 0
-                ? "#eee"
-                : "#a00000"
-        );
-    }
-
-    rect(
-        x + 5,
-        411,
-        35,
-        5,
-        "#aaa"
-    );
-}
-
-
-/* =========================================================
-   DARK SPIRIT
-========================================================= */
-
-function drawSpirit() {
-
-    const x = 650 - cameraX;
-    const y = 285;
-
-    /* Aura */
-
-    const glow =
-        ctx.createRadialGradient(
-            x,
-            y,
-            10,
-            x,
-            y,
-            90
-        );
-
-    glow.addColorStop(
-        0,
-        "rgba(100,0,130,.25)"
-    );
-
-    glow.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle = glow;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        90,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    /* Spirit */
-
-    pixelCircle(
-        x,
-        y,
-        24,
-        "#30233d"
-    );
-
-    rect(
-        x - 20,
-        y + 10,
-        40,
-        40,
-        "#241a2c"
-    );
-
-    /* Eyes */
-
-    rect(
-        x - 13,
-        y - 4,
-        8,
-        5,
-        "#a000ff"
-    );
-
-    rect(
-        x + 5,
-        y - 4,
-        8,
-        5,
-        "#a000ff"
-    );
-
-    /* Hands */
-
-    rect(
-        x - 45,
-        y + 15,
-        25,
-        5,
-        "#3b2948"
-    );
-
-    rect(
-        x + 20,
-        y + 15,
-        25,
-        5,
-        "#3b2948"
-    );
-}
-
-
-/* =========================================================
-   FOREST COMPOSITION
+   WORLD
 ========================================================= */
 
 function drawWorld() {
 
     drawSky();
+
     drawStars();
+
     drawMoon();
+
     drawMountains();
 
-    /* Back trees */
-
-    for (let i = 0; i < 12; i++) {
-
-        drawTree(
-            i * 105 + 30,
-            400,
-            .8,
-            0
-        );
-    }
+    drawTrees();
 
     drawGround();
 
-    /* Graveyard */
+    drawGraveyard();
 
-    for (let i = 0; i < 9; i++) {
-
-        drawGravestone(
-            i * 115 + 70,
-            430,
-            .8 + (i % 3) * .15
-        );
-    }
-
-    /* Bridge */
-
-    if (sceneIndex >= 11) {
+    if (
+        sceneIndex >= 11
+    ) {
         drawBoneBridge();
     }
 
-    /* Finish */
-
-    if (sceneIndex >= 13) {
-        drawFinishLine();
+    if (
+        sceneIndex >= 13
+    ) {
+        finishLine();
     }
-
-    /* Spirit */
 
     if (
         sceneIndex === 6 ||
         sceneIndex === 7
     ) {
-        drawSpirit();
+        spirit();
     }
 
-    drawFog();
+}
+
+
+/* =========================================================
+   CINEMATIC CAMERA
+========================================================= */
+
+function updateCamera(dt) {
+
+    cameraX +=
+        (cameraTargetX-cameraX)
+        * .035
+        * dt;
+
+    cameraZoom +=
+        (cameraTargetZoom-cameraZoom)
+        * .04
+        * dt;
+
+    cameraY +=
+        (cameraTargetY-cameraY)
+        * .04
+        * dt;
+
+    if (
+        screenShake > 0
+    ) {
+
+        cameraX +=
+            (Math.random()-.5)
+            * screenShake;
+
+        cameraY +=
+            (Math.random()-.5)
+            * screenShake;
+
+        screenShake *= .82;
+
+    }
+
+}
+
+
+/* =========================================================
+   CAMERA PRESETS
+========================================================= */
+
+function setCamera(
+    x,
+    zoom,
+    y=0
+) {
+
+    cameraTargetX = x;
+
+    cameraTargetZoom = zoom;
+
+    cameraTargetY = y;
+
 }
 
 
@@ -1673,494 +1843,705 @@ function drawWorld() {
 
 const scenes = [
 
-    {
-        text:
-        "In a dark twisted forest...",
-        duration: 5,
-        camera: "wide"
-    },
+{
+text:
+"In a dark twisted forest...",
+duration: 5
+},
 
-    {
-        text:
-        "A tiny skull encounters a proud hare.",
-        duration: 5,
-        camera: "meet"
-    },
+{
+text:
+"A tiny skull encounters a proud hare.",
+duration: 5
+},
 
-    {
-        text:
-        "Hare: 'I'm the fastest! Let's race, skull!'",
-        duration: 5,
-        camera: "duel"
-    },
+{
+text:
+"Hare: 'I'm the fastest! Let's race, skull!'",
+duration: 5
+},
 
-    {
-        text:
-        "Skull: 'Very well, hare. Let's race.'",
-        duration: 5,
-        camera: "accept"
-    },
+{
+text:
+"Skull: 'Very well, hare. Let's race.'",
+duration: 5
+},
 
-    {
-        text:
-        "The race begins! The hare dashes ahead!",
-        duration: 6,
-        camera: "race"
-    },
+{
+text:
+"The race begins! The hare dashes ahead!",
+duration: 6
+},
 
-    {
-        text:
-        "The skull moves slowly but steadily...",
-        duration: 6,
-        camera: "slow"
-    },
+{
+text:
+"The skull moves slowly but steadily...",
+duration: 6
+},
 
-    {
-        text:
-        "The hare encounters a dark spirit offering power.",
-        duration: 6,
-        camera: "spirit"
-    },
+{
+text:
+"The hare encounters a dark spirit offering power.",
+duration: 6
+},
 
-    {
-        text:
-        "Hare: 'I don't need your power, I'm winning!'",
-        duration: 6,
-        camera: "spirit"
-    },
+{
+text:
+"Hare: 'I don't need your power, I'm winning!'",
+duration: 6
+},
 
-    {
-        text:
-        "The skull finds a cursed shortcut through the graveyard.",
-        duration: 7,
-        camera: "graveyard"
-    },
+{
+text:
+"The skull finds a cursed shortcut through the graveyard.",
+duration: 7
+},
 
-    {
-        text:
-        "The hare meets other hares who doubt the skull.",
-        duration: 6,
-        camera: "hares"
-    },
+{
+text:
+"The hare meets other hares who doubt the skull.",
+duration: 6
+},
 
-    {
-        text:
-        "Other hares: 'You're racing a skull? How odd!'",
-        duration: 6,
-        camera: "hares"
-    },
+{
+text:
+"Other hares: 'You're racing a skull? How odd!'",
+duration: 6
+},
 
-    {
-        text:
-        "The skull crosses a bridge of bones.",
-        duration: 7,
-        camera: "bridge"
-    },
+{
+text:
+"The skull crosses a bridge of bones.",
+duration: 7
+},
 
-    {
-        text:
-        "Skull: 'The bridge creaks but holds...'",
-        duration: 6,
-        camera: "bridge"
-    },
+{
+text:
+"Skull: 'The bridge creaks but holds...'",
+duration: 6
+},
 
-    {
-        text:
-        "The hare sees the finish line and decides to rest.",
-        duration: 6,
-        camera: "finish"
-    },
+{
+text:
+"The hare sees the finish line and decides to rest.",
+duration: 6
+},
 
-    {
-        text:
-        "Hare: 'I'm so far ahead, I can sleep for a while...'",
-        duration: 6,
-        camera: "rest"
-    },
+{
+text:
+"Hare: 'I'm so far ahead, I can sleep for a while...'",
+duration: 6
+},
 
-    {
-        text:
-        "The hare falls into a deep sleep...",
-        duration: 7,
-        camera: "sleep"
-    },
+{
+text:
+"The hare falls into a deep sleep...",
+duration: 7
+},
 
-    {
-        text:
-        "The skull approaches and sees the sleeping hare.",
-        duration: 7,
-        camera: "approach"
-    },
+{
+text:
+"The skull approaches and sees the sleeping hare.",
+duration: 7
+},
 
-    {
-        text:
-        "Skull: 'The hare is asleep! And the finish line is right there!'",
-        duration: 7,
-        camera: "realization"
-    },
+{
+text:
+"Skull: 'The hare is asleep! And the finish line is right there!'",
+duration: 7
+},
 
-    {
-        text:
-        "Skull: 'I could win... or I could win differently...'",
-        duration: 7,
-        camera: "decision"
-    },
+{
+text:
+"Skull: 'I could win... or I could win differently...'",
+duration: 7
+},
 
-    {
-        text:
-        "The skull draws its blade and strikes!",
-        duration: 6,
-        camera: "kill"
-    },
+{
+text:
+"The skull draws its blade and strikes!",
+duration: 6
+},
 
-    {
-        text:
-        "The skull jumps in victory!",
-        duration: 7,
-        camera: "victory"
-    }
+{
+text:
+"The skull jumps in victory!",
+duration: 7
+}
+
 ];
 
 
 /* =========================================================
-   SCENE CONTROL
+   START SCENE
 ========================================================= */
 
 function startScene(index) {
 
-    sceneIndex = index;
+    sceneIndex =
+        index;
 
     sceneTimer = 0;
+
+    fade = 1;
+
+    skull.attack = 0;
 
     storyText.textContent =
         scenes[index].text;
 
     sceneCounter.textContent =
-        `SCENE ${String(index + 1).padStart(2, "0")}`;
+        `SCENE ${String(index+1).padStart(2,"0")}`;
 
-    fade = 1;
 
-    /* Camera setup */
+    switch(index) {
 
-    switch (scenes[index].camera) {
+        /* ---------------------------------------------
+           INTRO
+        --------------------------------------------- */
 
-        case "wide":
-            cameraX = 0;
-            cameraZoom = 1;
+        case 0:
+
+            setCamera(
+                0,
+                1
+            );
+
             break;
 
-        case "meet":
-            cameraX = 0;
-            cameraZoom = 1.15;
+
+        /* ---------------------------------------------
+           MEETING
+        --------------------------------------------- */
+
+        case 1:
+
+            setCamera(
+                70,
+                1.35
+            );
+
+            skull.x = 210;
+            hare.x = 290;
+
             break;
 
-        case "duel":
-            cameraX = 0;
-            cameraZoom = 1.35;
+
+        /* ---------------------------------------------
+           CHALLENGE
+        --------------------------------------------- */
+
+        case 2:
+
+            setCamera(
+                170,
+                1.55,
+                -10
+            );
+
             break;
 
-        case "accept":
-            cameraX = 0;
-            cameraZoom = 1.3;
+
+        /* ---------------------------------------------
+           ACCEPT
+        --------------------------------------------- */
+
+        case 3:
+
+            setCamera(
+                170,
+                1.45
+            );
+
             break;
 
-        case "race":
-            cameraZoom = 1;
+
+        /* ---------------------------------------------
+           RACE
+        --------------------------------------------- */
+
+        case 4:
+
+            hare.sleeping = false;
+
+            hare.x = 320;
+
+            skull.x = 170;
+
+            hare.targetX = 720;
+
+            skull.targetX = 500;
+
+            setCamera(
+                180,
+                1
+            );
+
             break;
 
-        case "spirit":
-            cameraX = 380;
-            cameraZoom = 1.4;
+
+        /* ---------------------------------------------
+           SLOW SKULL
+        --------------------------------------------- */
+
+        case 5:
+
+            skull.targetX = 520;
+
+            setCamera(
+                280,
+                1.15
+            );
+
             break;
 
-        case "graveyard":
-            cameraX = 250;
-            cameraZoom = 1.1;
+
+        /* ---------------------------------------------
+           SPIRIT
+        --------------------------------------------- */
+
+        case 6:
+
+            setCamera(
+                430,
+                1.55
+            );
+
             break;
 
-        case "hares":
-            cameraX = 430;
-            cameraZoom = 1.2;
+
+        case 7:
+
+            setCamera(
+                430,
+                1.8
+            );
+
             break;
 
-        case "bridge":
-            cameraX = 270;
-            cameraZoom = 1.15;
+
+        /* ---------------------------------------------
+           GRAVEYARD
+        --------------------------------------------- */
+
+        case 8:
+
+            skull.targetX = 570;
+
+            setCamera(
+                380,
+                1.1
+            );
+
             break;
 
-        case "finish":
-            cameraX = 550;
-            cameraZoom = 1.2;
+
+        /* ---------------------------------------------
+           HARES
+        --------------------------------------------- */
+
+        case 9:
+
+            setCamera(
+                500,
+                1.25
+            );
+
             break;
 
-        case "rest":
-            cameraX = 560;
-            cameraZoom = 1.5;
+
+        case 10:
+
+            setCamera(
+                540,
+                1.5
+            );
+
             break;
 
-        case "sleep":
-            cameraX = 590;
-            cameraZoom = 1.65;
+
+        /* ---------------------------------------------
+           BONE BRIDGE
+        --------------------------------------------- */
+
+        case 11:
+
+            skull.targetX = 650;
+
+            setCamera(
+                420,
+                1.1
+            );
+
             break;
 
-        case "approach":
-            cameraX = 500;
-            cameraZoom = 1.4;
+
+        case 12:
+
+            setCamera(
+                500,
+                1.4
+            );
+
             break;
 
-        case "realization":
-            cameraX = 560;
-            cameraZoom = 1.65;
+
+        /* ---------------------------------------------
+           FINISH
+        --------------------------------------------- */
+
+        case 13:
+
+            hare.x = 720;
+
+            skull.x = 550;
+
+            hare.sleeping = false;
+
+            setCamera(
+                560,
+                1.3
+            );
+
             break;
 
-        case "decision":
-            cameraX = 560;
-            cameraZoom = 1.8;
+
+        case 14:
+
+            hare.sleeping = true;
+
+            setCamera(
+                600,
+                1.55
+            );
+
             break;
 
-        case "kill":
-            cameraX = 550;
-            cameraZoom = 2.1;
-            skull.attack = 0;
+
+        case 15:
+
+            hare.sleeping = true;
+
+            setCamera(
+                630,
+                1.7
+            );
+
             break;
 
-        case "victory":
-            cameraX = 520;
-            cameraZoom = 1.5;
-            skull.jump = 0;
+
+        /* ---------------------------------------------
+           APPROACH
+        --------------------------------------------- */
+
+        case 16:
+
+            skull.targetX =
+                hare.x-70;
+
+            setCamera(
+                610,
+                1.45
+            );
+
             break;
+
+
+        /* ---------------------------------------------
+           REALIZATION
+        --------------------------------------------- */
+
+        case 17:
+
+            setCamera(
+                650,
+                1.75
+            );
+
+            break;
+
+
+        /* ---------------------------------------------
+           DECISION
+        --------------------------------------------- */
+
+        case 18:
+
+            setCamera(
+                650,
+                1.95,
+                -10
+            );
+
+            break;
+
+
+        /* ---------------------------------------------
+           KILL
+        --------------------------------------------- */
+
+        case 19:
+
+            skull.targetX =
+                hare.x-25;
+
+            setCamera(
+                650,
+                2.25
+            );
+
+            break;
+
+
+        /* ---------------------------------------------
+           VICTORY
+        --------------------------------------------- */
+
+        case 20:
+
+            setCamera(
+                620,
+                1.5,
+                -15
+            );
+
+            break;
+
     }
 
-    /* Scene-specific actions */
-
-    if (index === 4) {
-
-        hare.targetX = 690;
-        skull.targetX = 300;
-    }
-
-    if (index === 5) {
-
-        skull.targetX = 420;
-    }
-
-    if (index === 8) {
-
-        skull.targetX = 500;
-    }
-
-    if (index === 11) {
-
-        skull.targetX = 600;
-    }
-
-    if (index >= 13) {
-
-        hare.x = 720;
-        hare.targetX = 720;
-
-        skull.targetX =
-            index >= 16 ? 670 : 560;
-    }
-
-    if (index >= 14) {
-
-        hare.sleeping = true;
-    }
-
-    if (index === 19) {
-
-        hare.sleeping = true;
-
-        skull.targetX =
-            hare.x - 25;
-    }
 }
 
 
 /* =========================================================
-   UPDATE CHARACTERS
+   CHARACTER UPDATE
 ========================================================= */
 
 function updateCharacters(dt) {
 
-    /* Skull */
+    /* Skull walking */
 
     if (
-        Math.abs(skull.targetX - skull.x) > 2
+        Math.abs(
+            skull.targetX-
+            skull.x
+        ) > 2
         &&
         sceneIndex !== 19
     ) {
 
         const direction =
-            skull.targetX > skull.x
+            skull.targetX >
+            skull.x
                 ? 1
                 : -1;
 
         skull.x +=
-            direction *
-            .45 *
+            direction*
+            .45*
             dt;
 
         skull.walkTimer += dt;
 
-        if (skull.walkTimer > 8) {
+        if (
+            skull.walkTimer>8
+        ) {
 
-            skull.walkTimer = 0;
+            skull.walkTimer=0;
 
             skull.walkFrame =
-                1 - skull.walkFrame;
+                1-skull.walkFrame;
+
         }
 
-        if (Math.random() < .025) {
-            createParticle(
-                skull.x + 15,
-                skull.y + 50,
-                "dust"
+        if (
+            Math.random()<.025
+        ) {
+
+            particle(
+                skull.x+15,
+                skull.y+50
             );
+
         }
+
     }
 
-    /* Hare */
+
+    /* Hare running */
 
     if (
         !hare.sleeping &&
-        Math.abs(hare.targetX - hare.x) > 2
+        Math.abs(
+            hare.targetX-
+            hare.x
+        )>2
     ) {
 
         const direction =
-            hare.targetX > hare.x
+            hare.targetX>
+            hare.x
                 ? 1
                 : -1;
 
         hare.x +=
-            direction *
-            .9 *
+            direction*
+            .9*
             dt;
 
         hare.walkTimer += dt;
 
-        if (hare.walkTimer > 6) {
+        if (
+            hare.walkTimer>6
+        ) {
 
-            hare.walkTimer = 0;
+            hare.walkTimer=0;
 
             hare.walkFrame =
-                1 - hare.walkFrame;
+                1-hare.walkFrame;
+
         }
 
-        if (Math.random() < .04) {
+        if (
+            Math.random()<.05
+        ) {
 
-            createParticle(
-                hare.x + 15,
-                hare.y + 48,
-                "dust"
+            particle(
+                hare.x+15,
+                hare.y+48
             );
+
         }
+
     }
 
-    /* Sleep breathing */
 
-    if (hare.sleeping) {
+    /* Sleeping breathing */
+
+    if (
+        hare.sleeping
+    ) {
 
         hare.y =
-            390 +
+            390+
             Math.sin(
-                performance.now() * .003
-            ) * 1.5;
+                performance.now()*.003
+            )*1.5;
+
     }
 
-    /* Victory jump */
 
-    if (sceneIndex === 20) {
+    /* Victory */
+
+    if (
+        sceneIndex===20
+    ) {
 
         skull.jump =
             Math.abs(
                 Math.sin(
-                    performance.now() * .005
+                    performance.now()*.005
                 )
-            ) * 65;
+            )*65;
+
     }
 
-    /* Attack */
 
-    if (sceneIndex === 19) {
+    /* Attack sequence */
+
+    if (
+        sceneIndex===19
+    ) {
 
         const progress =
             Math.min(
-                sceneTimer / 2.5,
+                sceneTimer/
+                2.5,
                 1
             );
 
         skull.attack =
-            progress * 1.8;
+            progress*
+            1.8;
 
         if (
-            progress > .45 &&
+            progress>.45 &&
             !hareKilled
         ) {
 
-            hareKilled = true;
+            hareKilled=true;
 
-            hare.headless = true;
+            hare.headless=true;
 
-            screenShake = 12;
+            cinematicFlash=.9;
 
-            for (let i = 0; i < 25; i++) {
+            screenShake=16;
 
-                createParticle(
-                    hare.x + 20,
-                    hare.y + 10,
+            for(
+                let i=0;
+                i<35;
+                i++
+            ) {
+
+                particle(
+                    hare.x+20,
+                    hare.y+5,
                     "blood"
                 );
+
             }
+
         }
+
     }
+
 }
 
 
 /* =========================================================
-   CAMERA
+   CINEMATIC EFFECTS
 ========================================================= */
 
-function updateCamera(dt) {
-
-    const target =
-        skull.x - 480;
+function cinematicEffects(dt) {
 
     if (
-        sceneIndex === 4 ||
-        sceneIndex === 5 ||
-        sceneIndex === 8 ||
-        sceneIndex === 11
+        cinematicFlash>0
     ) {
 
-        cameraX +=
-            (target - cameraX)
-            * .015
-            * dt;
+        cinematicFlash -=
+            .045*dt;
+
+        if (
+            cinematicFlash<0
+        ) {
+
+            cinematicFlash=0;
+
+        }
+
     }
 
-    if (sceneIndex >= 13) {
+    if (
+        fade>0
+    ) {
 
-        cameraX +=
-            ((hare.x - 480) - cameraX)
-            * .02
-            * dt;
+        fade -=
+            .04*dt;
+
+        if (
+            fade<0
+        ) {
+
+            fade=0;
+
+        }
+
     }
 
-    if (screenShake > 0) {
-
-        cameraX +=
-            (Math.random() - .5)
-            * screenShake;
-
-        screenShake *= .85;
-    }
 }
 
 
 /* =========================================================
-   DRAW COMPLETE FRAME
+   DRAW FRAME
 ========================================================= */
 
 function drawFrame() {
@@ -2174,6 +2555,11 @@ function drawFrame() {
 
     ctx.save();
 
+    ctx.translate(
+        0,
+        cameraY
+    );
+
     drawWorld();
 
     drawSkull();
@@ -2184,16 +2570,19 @@ function drawFrame() {
 
     ctx.restore();
 
-    /* Cinematic vignette */
+
+    /* ---------------------------------------------
+       Cinematic vignette
+    --------------------------------------------- */
 
     const vignette =
         ctx.createRadialGradient(
-            canvas.width / 2,
-            canvas.height / 2,
+            480,
+            300,
             170,
-            canvas.width / 2,
-            canvas.height / 2,
-            550
+            480,
+            300,
+            560
         );
 
     vignette.addColorStop(
@@ -2203,10 +2592,11 @@ function drawFrame() {
 
     vignette.addColorStop(
         1,
-        "rgba(0,0,0,.72)"
+        "rgba(0,0,0,.75)"
     );
 
-    ctx.fillStyle = vignette;
+    ctx.fillStyle =
+        vignette;
 
     ctx.fillRect(
         0,
@@ -2215,27 +2605,56 @@ function drawFrame() {
         canvas.height
     );
 
-    /* Letterbox */
+
+    /* ---------------------------------------------
+       Letterbox
+    --------------------------------------------- */
 
     rect(
         0,
         0,
         canvas.width,
-        25,
-        "#050507"
+        22,
+        "#030305"
     );
 
     rect(
         0,
-        canvas.height - 25,
+        canvas.height-22,
         canvas.width,
-        25,
-        "#050507"
+        22,
+        "#030305"
     );
 
-    /* Fade */
 
-    if (fade > 0) {
+    /* ---------------------------------------------
+       Attack flash
+    --------------------------------------------- */
+
+    if (
+        cinematicFlash>0
+    ) {
+
+        ctx.fillStyle =
+            `rgba(255,255,255,${cinematicFlash*.35})`;
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    }
+
+
+    /* ---------------------------------------------
+       Fade
+    --------------------------------------------- */
+
+    if (
+        fade>0
+    ) {
 
         ctx.fillStyle =
             `rgba(0,0,0,${fade})`;
@@ -2246,369 +2665,41 @@ function drawFrame() {
             canvas.width,
             canvas.height
         );
+
     }
+
 }
 
 
 /* =========================================================
-   MUSIC ENGINE
-========================================================= */
-
-let audioCtx = null;
-
-let masterGain = null;
-
-let musicTimer = null;
-
-let musicStep = 0;
-
-const melody = [
-    146.83,
-    174.61,
-    196.00,
-    174.61,
-    130.81,
-    146.83,
-    174.61,
-    116.54,
-
-    146.83,
-    174.61,
-    220.00,
-    196.00,
-    174.61,
-    146.83,
-    130.81,
-    116.54
-];
-
-const bass = [
-    73.42,
-    73.42,
-    65.41,
-    65.41,
-    58.27,
-    58.27,
-    65.41,
-    65.41
-];
-
-
-function initAudio() {
-
-    if (audioCtx) {
-
-        if (
-            audioCtx.state === "suspended"
-        ) {
-            audioCtx.resume();
-        }
-
-        return;
-    }
-
-    const AudioContext =
-        window.AudioContext ||
-        window.webkitAudioContext;
-
-    audioCtx =
-        new AudioContext();
-
-    masterGain =
-        audioCtx.createGain();
-
-    masterGain.gain.value = .13;
-
-    masterGain.connect(
-        audioCtx.destination
-    );
-
-    startMusicLoop();
-}
-
-
-function playTone(
-    frequency,
-    duration,
-    type = "square",
-    volume = .1
-) {
-
-    if (
-        !audioCtx ||
-        !musicOn
-    ) {
-        return;
-    }
-
-    const osc =
-        audioCtx.createOscillator();
-
-    const gain =
-        audioCtx.createGain();
-
-    osc.type = type;
-
-    osc.frequency.setValueAtTime(
-        frequency,
-        audioCtx.currentTime
-    );
-
-    gain.gain.setValueAtTime(
-        0.0001,
-        audioCtx.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        volume,
-        audioCtx.currentTime + .01
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        audioCtx.currentTime + duration
-    );
-
-    osc.connect(gain);
-
-    gain.connect(masterGain);
-
-    osc.start();
-
-    osc.stop(
-        audioCtx.currentTime +
-        duration +
-        .02
-    );
-}
-
-
-function playKick() {
-
-    if (!audioCtx || !musicOn) {
-        return;
-    }
-
-    const osc =
-        audioCtx.createOscillator();
-
-    const gain =
-        audioCtx.createGain();
-
-    osc.type = "sine";
-
-    osc.frequency.setValueAtTime(
-        100,
-        audioCtx.currentTime
-    );
-
-    osc.frequency.exponentialRampToValueAtTime(
-        45,
-        audioCtx.currentTime + .12
-    );
-
-    gain.gain.setValueAtTime(
-        .13,
-        audioCtx.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        .001,
-        audioCtx.currentTime + .12
-    );
-
-    osc.connect(gain);
-
-    gain.connect(masterGain);
-
-    osc.start();
-
-    osc.stop(
-        audioCtx.currentTime + .13
-    );
-}
-
-
-function playHat() {
-
-    if (!audioCtx || !musicOn) {
-        return;
-    }
-
-    const buffer =
-        audioCtx.createBuffer(
-            1,
-            audioCtx.sampleRate * .04,
-            audioCtx.sampleRate
-        );
-
-    const data =
-        buffer.getChannelData(0);
-
-    for (
-        let i = 0;
-        i < data.length;
-        i++
-    ) {
-
-        data[i] =
-            Math.random() * 2 - 1;
-    }
-
-    const source =
-        audioCtx.createBufferSource();
-
-    const gain =
-        audioCtx.createGain();
-
-    source.buffer = buffer;
-
-    gain.gain.value = .025;
-
-    source.connect(gain);
-
-    gain.connect(masterGain);
-
-    source.start();
-}
-
-
-function startMusicLoop() {
-
-    if (musicTimer) {
-        clearInterval(musicTimer);
-    }
-
-    musicStep = 0;
-
-    musicTimer =
-        setInterval(
-            () => {
-
-                if (
-                    !musicOn ||
-                    !audioCtx
-                ) {
-                    return;
-                }
-
-                const note =
-                    melody[
-                        musicStep %
-                        melody.length
-                    ];
-
-                const bassNote =
-                    bass[
-                        Math.floor(
-                            musicStep / 2
-                        ) %
-                        bass.length
-                    ];
-
-                /* Main melody */
-
-                playTone(
-                    note,
-                    .19,
-                    "square",
-                    .055
-                );
-
-                /* Bass */
-
-                if (
-                    musicStep % 2 === 0
-                ) {
-
-                    playTone(
-                        bassNote,
-                        .32,
-                        "triangle",
-                        .075
-                    );
-                }
-
-                /* Rhythm */
-
-                if (
-                    musicStep % 4 === 0
-                ) {
-                    playKick();
-                }
-
-                if (
-                    musicStep % 2 === 1
-                ) {
-                    playHat();
-                }
-
-                musicStep++;
-
-            },
-            230
-        );
-}
-
-
-/* =========================================================
-   MUSIC TOGGLE
-========================================================= */
-
-function toggleMusic() {
-
-    musicOn =
-        !musicOn;
-
-    musicToggle.textContent =
-        musicOn
-            ? "MUSIC: ON"
-            : "MUSIC: OFF";
-
-    if (
-        audioCtx &&
-        masterGain
-    ) {
-
-        masterGain.gain.setTargetAtTime(
-            musicOn ? .13 : .0001,
-            audioCtx.currentTime,
-            .03
-        );
-    }
-
-    if (
-        musicOn &&
-        gameStarted
-    ) {
-
-        initAudio();
-    }
-}
-
-
-/* =========================================================
-   GAME LOOP
+   MAIN GAME LOOP
 ========================================================= */
 
 function update(time) {
 
-    if (!lastTime) {
-        lastTime = time;
+    if(
+        !lastTime
+    ) {
+
+        lastTime=time;
+
     }
 
     const dt =
         Math.min(
-            (time - lastTime) / 16.67,
+            (time-lastTime)/16.67,
             2
         );
 
-    lastTime = time;
+    lastTime=time;
 
-    if (gameStarted) {
+
+    if(
+        gameStarted
+    ) {
 
         sceneTimer +=
-            dt / 60;
+            dt/60;
 
         updateCharacters(dt);
 
@@ -2616,19 +2707,8 @@ function update(time) {
 
         updateParticles(dt);
 
-        /* Fade in */
+        cinematicEffects(dt);
 
-        if (fade > 0) {
-
-            fade -=
-                .035 * dt;
-
-            if (fade < 0) {
-                fade = 0;
-            }
-        }
-
-        /* Scene progression */
 
         if (
             sceneTimer >=
@@ -2637,23 +2717,30 @@ function update(time) {
 
             if (
                 sceneIndex <
-                scenes.length - 1
+                scenes.length-1
             ) {
 
                 startScene(
-                    sceneIndex + 1
+                    sceneIndex+1
                 );
 
             } else {
 
                 showMoral();
+
             }
+
         }
+
     }
+
 
     drawFrame();
 
-    requestAnimationFrame(update);
+    requestAnimationFrame(
+        update
+    );
+
 }
 
 
@@ -2663,11 +2750,15 @@ function update(time) {
 
 function showMoral() {
 
-    if (moralShown) {
+    if (
+        moralShown
+    ) {
+
         return;
+
     }
 
-    moralShown = true;
+    moralShown=true;
 
     setTimeout(
         () => {
@@ -2678,6 +2769,31 @@ function showMoral() {
         },
         1800
     );
+
+}
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+function startGame() {
+
+    if(
+        gameStarted
+    ) {
+
+        return;
+
+    }
+
+    gameStarted=true;
+
+    titleScreen.style.display =
+        "none";
+
+    startScene(0);
+
 }
 
 
@@ -2688,27 +2804,7 @@ function showMoral() {
 function restartGame() {
 
     location.reload();
-}
 
-
-/* =========================================================
-   START
-========================================================= */
-
-function startGame() {
-
-    if (gameStarted) {
-        return;
-    }
-
-    gameStarted = true;
-
-    titleScreen.style.display =
-        "none";
-
-    initAudio();
-
-    startScene(0);
 }
 
 
@@ -2721,16 +2817,6 @@ titleScreen.addEventListener(
     startGame
 );
 
-musicToggle.addEventListener(
-    "click",
-    (event) => {
-
-        event.stopPropagation();
-
-        toggleMusic();
-    }
-);
-
 moral.addEventListener(
     "click",
     restartGame
@@ -2738,12 +2824,14 @@ moral.addEventListener(
 
 
 /* =========================================================
-   INITIAL STATE
+   INITIALIZATION
 ========================================================= */
 
 startScene(0);
 
-requestAnimationFrame(update);
+requestAnimationFrame(
+    update
+);
 
 </script>
 
