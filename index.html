@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Pixel Tale - The Skull and The Hare</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Press Start 2P', cursive;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            background: #1a1a2e;
+            border: 4px solid #4a4a4a;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #story-text {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff4444;
+            font-size: 12px;
+            text-shadow: 2px 2px #000;
+            text-align: center;
+            width: 90%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #title-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        #title-screen h1 {
+            color: #ff0000;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #ff0000;
+        }
+
+        #title-screen p {
+            color: #888;
+            font-size: 14px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        #moral {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff0000;
+            font-size: 16px;
+            text-align: center;
+            z-index: 15;
+            display: none;
+            text-shadow: 0 0 20px #ff0000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border: 2px solid #ff0000;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px #ff0000; }
+            50% { box-shadow: 0 0 40px #ff0000; }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="story-text">Loading...</div>
+        <div id="moral"></div>
+        <div id="title-screen">
+            <h1>DARK PIXEL TALE<br>THE SKULL & THE HARE</h1>
+            <p>CLICK TO BEGIN</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const storyText = document.getElementById('story-text');
+        const titleScreen = document.getElementById('title-screen');
+        const moralDiv = document.getElementById('moral');
+
+        // Canvas size
+        canvas.width = 800;
+        canvas.height = 500;
+
+        // Game state
+        let gameStarted = false;
+        let gameTime = 0;
+        let storyPhase = 0;
+        let skullX = 50;
+        let hareX = 50;
+        let raceProgress = 0;
+        let hareSleeping = false;
+        let hareKilled = false;
+        let moralShown = false;
+
+        // Character definitions
+        class Skull {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.width = 30;
+                this.height = 35;
+                this.animationFrame = 0;
+                this.animationTimer = 0;
+            }
+
+            draw() {
+                const x = this.x;
+                const y = this.y;
+                
+                // Hood
+                ctx.fillStyle = '#4a4a4a';
+                ctx.fillRect(x - 2, y - 5, this.width + 4, this.height + 10);
+                
+                // Hood top
+                ctx.beginPath();
+                ctx.moveTo(x - 5, y);
+                ctx.lineTo(x + this.width / 2, y - 15);
+                ctx.lineTo(x + this.width + 5, y);
+                ctx.fillStyle = '#4a4a4a';
+                ctx.fill();
+                
+                // Skull face
+                ctx.fillStyle = '#e0e0e0';
+                ctx.fillRect(x, y, this.width, this.height);
+                
+                // Eyes
+                ctx.fillStyle = '#000';
+                ctx.fillRect(x + 5, y + 8, 6, 6);
+                ctx.fillRect(x + this.width - 11, y + 8, 6, 6);
+                
+                // Red glow eyes
+                ctx.fillStyle = '#ff0000';
+                ctx.fillRect(x + 7, y + 10, 2, 2);
+                ctx.fillRect(x + this.width - 9, y + 10, 2, 2);
+                
+                // Nose
+                ctx.fillStyle = '#000';
+                ctx.fillRect(x + 13, y + 15, 4, 3);
+                
+                // Teeth
+                ctx.fillStyle = '#fff';
+                for (let i = 0; i < 4; i++) {
+                    ctx.fillRect(x + 8 + i * 4, y + 22, 3, 4);
+                }
+                
+                // Walking animation
+                if (gameStarted && !moralShown) {
+                    this.animationTimer++;
+                    if (this.animationTimer > 10) {
+                        this.animationFrame = 1 - this.animationFrame;
+                        this.animationTimer = 0;
+                    }
+                }
+            }
+        }
+
+        class Hare {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.width = 35;
+                this.height = 40;
+                this.animationFrame = 0;
+                this.animationTimer = 0;
+            }
+
+            draw() {
+                const x = this.x;
+                const y = this.y;
+                
+                // Body
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(x, y + 15, this.width, this.height - 15);
+                
+                // Head
+                ctx.fillStyle = '#A0522D';
+                ctx.fillRect(x + 5, y, this.width - 10, 20);
+                
+                // Ears
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(x + 3, y - 15, 6, 15);
+                ctx.fillRect(x + this.width - 9, y - 15, 6, 15);
+                
+                // Inner ears
+                ctx.fillStyle = '#FFB6C1';
+                ctx.fillRect(x + 5, y - 13, 2, 10);
+                ctx.fillRect(x + this.width - 7, y - 13, 2, 10);
+                
+                // Eyes
+                ctx.fillStyle = '#000';
+                ctx.fillRect(x + 8, y + 8, 4, 4);
+                ctx.fillRect(x + this.width - 12, y + 8, 4, 4);
+                
+                // Nose
+                ctx.fillStyle = '#FF69B4';
+                ctx.fillRect(x + 15, y + 14, 5, 3);
+                
+                // Tail
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(x + this.width, y + 20, 5, 5);
+                
+                // Animation
+                if (gameStarted && !moralShown) {
+                    this.animationTimer++;
+                    if (this.animationTimer > 8) {
+                        this.animationFrame = 1 - this.animationFrame;
+                        this.animationTimer = 0;
+                    }
+                }
+            }
+        }
+
+        const skull = new Skull(50, 350);
+        const hare = new Hare(50, 350);
+
+        // Scene elements
+        const scenes = [
+            { text: "A tiny skull in a dark forest meets a proud hare.", type: "intro" },
+            { text: "The hare challenges the skull to a race.", type: "challenge" },
+            { text: "The race begins! The hare dashes ahead.", type: "race_start" },
+            { text: "The skull moves slowly but steadily...", type: "slow_skull" },
+            { text: "The hare encounters a dark spirit offering power.", type: "scene1" },
+            { text: "The skull finds a cursed shortcut through the graveyard.", type: "scene2" },
+            { text: "The hare meets other hares who doubt the skull.", type: "scene3" },
+            { text: "The skull crosses a bridge of bones.", type: "scene4" },
+            { text: "The hare sees the finish line and decides to rest.", type: "hare_rest" },
+            { text: "The hare falls asleep...", type: "hare_sleep" },
+            { text: "The skull approaches and sees the sleeping hare.", type: "skull_approach" },
+            { text: "The skull draws its blade and strikes!", type: "kill" },
+        ];
+
+        // Drawing functions
+        function drawBackground() {
+            // Dark sky
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#0a0a2e');
+            gradient.addColorStop(0.5, '#1a1a3e');
+            gradient.addColorStop(1, '#2a2a4e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Moon
+            ctx.fillStyle = '#ff4444';
+            ctx.beginPath();
+            ctx.arc(700, 80, 40, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Moon glow
+            const moonGradient = ctx.createRadialGradient(700, 80, 40, 700, 80, 100);
+            moonGradient.addColorStop(0, 'rgba(255, 68, 68, 0.3)');
+            moonGradient.addColorStop(1, 'rgba(255, 68, 68, 0)');
+            ctx.fillStyle = moonGradient;
+            ctx.beginPath();
+            ctx.arc(700, 80, 100, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Ground
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(0, 400, canvas.width, 100);
+            
+            // Ground texture
+            ctx.fillStyle = '#2a2a2a';
+            for (let i = 0; i < 20; i++) {
+                ctx.fillRect(i * 40, 400 + Math.sin(i) * 20, 20, 5);
+            }
+            
+            // Trees
+            for (let i = 0; i < 5; i++) {
+                drawTree(100 + i * 150, 400);
+            }
+            
+            // Gravestones
+            for (let i = 0; i < 8; i++) {
+                drawGravestone(80 + i * 100, 400);
+            }
+        }
+
+        function drawTree(x, y) {
+            ctx.fillStyle = '#2a1a1a';
+            ctx.fillRect(x - 5, y - 80, 10, 80);
+            ctx.fillStyle = '#1a0a0a';
+            ctx.beginPath();
+            ctx.arc(x, y - 100, 30, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawGravestone(x, y) {
+            ctx.fillStyle = '#3a3a3a';
+            ctx.fillRect(x - 15, y - 25, 30, 25);
+            ctx.beginPath();
+            ctx.arc(x, y - 25, 15, Math.PI, 0);
+            ctx.fill();
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(x - 5, y - 18, 10, 3);
+        }
+
+        function drawFinishLine() {
+            ctx.fillStyle = '#ff0000';
+            for (let i = 0; i < 10; i++) {
+                ctx.fillRect(750 - i * 2, 370, 2, 30);
+            }
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(750, 370, 2, 30);
+        }
+
+        function drawRaceProgress() {
+            ctx.fillStyle = '#333';
+            ctx.fillRect(50, 20, 700, 20);
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(50, 20, raceProgress * 700, 20);
+            
+            // Finish line marker
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(740, 15, 5, 30);
+        }
+
+        function drawAnimation() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            drawBackground();
+            drawRaceProgress();
+            drawFinishLine();
+            
+            skull.draw();
+            hare.draw();
+            
+            // Draw blood if hare is killed
+            if (hareKilled) {
+                ctx.fillStyle = '#ff0000';
+                ctx.fillRect(hare.x, hare.y + 15, 35, 5);
+                ctx.fillRect(hare.x + 5, hare.y + 10, 25, 3);
+            }
+        }
+
+        function updateGame() {
+            if (!gameStarted || moralShown) return;
+            
+            gameTime++;
+            
+            // Update story phase
+            if (gameTime % 300 === 0 && storyPhase < scenes.length - 1) {
+                storyPhase++;
+                storyText.textContent = scenes[storyPhase].text;
+            }
+            
+            // Update positions based on story phase
+            if (storyPhase >= 2 && !hareKilled) {
+                if (storyPhase < 8) {
+                    // Hare runs fast
+                    hare.x += 2;
+                    skull.x += 0.3;
+                } else if (storyPhase === 8) {
+                    // Hare reaches near finish
+                    hare.x = 650;
+                    storyText.textContent = "Hare says: 'I'm so far ahead, I can rest...'";
+                } else if (storyPhase === 9) {
+                    // Hare sleeping
+                    hareSleeping = true;
+                    skull.x += 0.5;
+                    storyText.textContent = "The hare fell asleep...";
+                } else if (storyPhase === 10) {
+                    skull.x += 0.5;
+                    storyText.textContent = "The skull approaches the sleeping hare...";
+                } else if (storyPhase === 11) {
+                    if (skull.x >= hare.x - 20) {
+                        hareKilled = true;
+                        storyText.textContent = "The skull strikes! The hare is dead!";
+                    } else {
+                        skull.x += 1;
+                    }
+                }
+            }
+            
+            // Update race progress
+            raceProgress = Math.max(skull.x - 50, hare.x - 50) / 700;
+            
+            // Check for moral
+            if (hareKilled && !moralShown) {
+                moralShown = true;
+                setTimeout(() => {
+                    moralDiv.style.display = 'block';
+                    moralDiv.innerHTML = "MORAL OF THE STORY:<br><br>DON'T TRUST EVEN YOURSELF.<br>THE DARKNESS LIES WITHIN US ALL.<br><br>CLICK TO RESTART";
+                    moralDiv.style.cursor = 'pointer';
+                    moralDiv.onclick = restartGame;
+                }, 1000);
+            }
+            
+            drawAnimation();
+            requestAnimationFrame(updateGame);
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+
+        function startGame() {
+            titleScreen.style.display = 'none';
+            gameStarted = true;
+            storyPhase = 0;
+            storyText.textContent = scenes[0].text;
+            updateGame();
+        }
+
+        titleScreen.addEventListener('click', startGame);
+
+        // Initial draw
+        drawAnimation();
+    </script>
+</body>
+</html>
