@@ -21,6 +21,7 @@
             min-height: 100vh;
             font-family: 'Press Start 2P', cursive;
             overflow: hidden;
+            cursor: none;
         }
 
         #game-container {
@@ -59,7 +60,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -74,6 +75,7 @@
             text-align: center;
             margin-bottom: 30px;
             text-shadow: 0 0 20px #ff0000;
+            animation: titleGlow 2s infinite;
         }
 
         #title-screen p {
@@ -85,6 +87,11 @@
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 20px #ff0000; }
+            50% { text-shadow: 0 0 40px #ff0000, 0 0 60px #ff0000; }
         }
 
         #moral {
@@ -102,11 +109,30 @@
             padding: 20px;
             border: 2px solid #ff0000;
             animation: glow 2s infinite;
+            cursor: pointer;
         }
 
         @keyframes glow {
             0%, 100% { box-shadow: 0 0 20px #ff0000; }
             50% { box-shadow: 0 0 40px #ff0000; }
+        }
+
+        #music-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 25;
+            background: #333;
+            color: #fff;
+            border: 2px solid #666;
+            padding: 5px 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        #music-toggle:hover {
+            background: #444;
         }
     </style>
 </head>
@@ -115,6 +141,7 @@
         <canvas id="gameCanvas"></canvas>
         <div id="story-text">Loading...</div>
         <div id="moral"></div>
+        <button id="music-toggle">MUSIC: ON</button>
         <div id="title-screen">
             <h1>DARK PIXEL TALE<br>THE SKULL & THE HARE</h1>
             <p>CLICK TO BEGIN</p>
@@ -127,6 +154,7 @@
         const storyText = document.getElementById('story-text');
         const titleScreen = document.getElementById('title-screen');
         const moralDiv = document.getElementById('moral');
+        const musicToggle = document.getElementById('music-toggle');
 
         // Canvas size
         canvas.width = 800;
@@ -142,6 +170,13 @@
         let hareSleeping = false;
         let hareKilled = false;
         let moralShown = false;
+        let musicOn = true;
+        let cameraZoom = false;
+        let zoomTimer = 0;
+
+        // Audio context for chip music
+        let audioCtx = null;
+        let musicInterval = null;
 
         // Character definitions
         class Skull {
@@ -152,11 +187,20 @@
                 this.height = 35;
                 this.animationFrame = 0;
                 this.animationTimer = 0;
+                this.jumping = false;
+                this.jumpHeight = 0;
             }
 
-            draw() {
+            draw(zoom = false) {
                 const x = this.x;
-                const y = this.y;
+                const y = this.y - this.jumpHeight;
+                const scale = zoom ? 2 : 1;
+                
+                ctx.save();
+                if (zoom) {
+                    ctx.translate(-x * (scale - 1), -y * (scale - 1));
+                    ctx.scale(scale, scale);
+                }
                 
                 // Hood
                 ctx.fillStyle = '#4a4a4a';
@@ -194,12 +238,29 @@
                     ctx.fillRect(x + 8 + i * 4, y + 22, 3, 4);
                 }
                 
+                // Blood on blade if hare killed
+                if (hareKilled) {
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillRect(x + this.width, y + 5, 15, 3);
+                }
+                
+                ctx.restore();
+                
                 // Walking animation
                 if (gameStarted && !moralShown) {
                     this.animationTimer++;
                     if (this.animationTimer > 10) {
                         this.animationFrame = 1 - this.animationFrame;
                         this.animationTimer = 0;
+                    }
+                }
+                
+                // Jump animation
+                if (this.jumping) {
+                    this.jumpHeight = Math.sin(this.animationTimer * 0.2) * 20;
+                    if (this.jumpHeight < 0) {
+                        this.jumpHeight = 0;
+                        this.jumping = false;
                     }
                 }
             }
@@ -213,6 +274,7 @@
                 this.height = 40;
                 this.animationFrame = 0;
                 this.animationTimer = 0;
+                this.headless = false;
             }
 
             draw() {
@@ -223,28 +285,34 @@
                 ctx.fillStyle = '#8B4513';
                 ctx.fillRect(x, y + 15, this.width, this.height - 15);
                 
-                // Head
-                ctx.fillStyle = '#A0522D';
-                ctx.fillRect(x + 5, y, this.width - 10, 20);
-                
-                // Ears
-                ctx.fillStyle = '#8B4513';
-                ctx.fillRect(x + 3, y - 15, 6, 15);
-                ctx.fillRect(x + this.width - 9, y - 15, 6, 15);
-                
-                // Inner ears
-                ctx.fillStyle = '#FFB6C1';
-                ctx.fillRect(x + 5, y - 13, 2, 10);
-                ctx.fillRect(x + this.width - 7, y - 13, 2, 10);
-                
-                // Eyes
-                ctx.fillStyle = '#000';
-                ctx.fillRect(x + 8, y + 8, 4, 4);
-                ctx.fillRect(x + this.width - 12, y + 8, 4, 4);
-                
-                // Nose
-                ctx.fillStyle = '#FF69B4';
-                ctx.fillRect(x + 15, y + 14, 5, 3);
+                // Head (if not headless)
+                if (!this.headless) {
+                    ctx.fillStyle = '#A0522D';
+                    ctx.fillRect(x + 5, y, this.width - 10, 20);
+                    
+                    // Ears
+                    ctx.fillStyle = '#8B4513';
+                    ctx.fillRect(x + 3, y - 15, 6, 15);
+                    ctx.fillRect(x + this.width - 9, y - 15, 6, 15);
+                    
+                    // Inner ears
+                    ctx.fillStyle = '#FFB6C1';
+                    ctx.fillRect(x + 5, y - 13, 2, 10);
+                    ctx.fillRect(x + this.width - 7, y - 13, 2, 10);
+                    
+                    // Eyes
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(x + 8, y + 8, 4, 4);
+                    ctx.fillRect(x + this.width - 12, y + 8, 4, 4);
+                    
+                    // Nose
+                    ctx.fillStyle = '#FF69B4';
+                    ctx.fillRect(x + 15, y + 14, 5, 3);
+                } else {
+                    // Blood where head was
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillRect(x + 5, y, this.width - 10, 10);
+                }
                 
                 // Tail
                 ctx.fillStyle = '#fff';
@@ -266,18 +334,27 @@
 
         // Scene elements
         const scenes = [
-            { text: "A tiny skull in a dark forest meets a proud hare.", type: "intro" },
-            { text: "The hare challenges the skull to a race.", type: "challenge" },
-            { text: "The race begins! The hare dashes ahead.", type: "race_start" },
+            { text: "In a dark twisted forest...", type: "intro" },
+            { text: "A tiny skull encounters a proud hare.", type: "meet" },
+            { text: "Hare: 'I'm the fastest! Let's race, skull!'", type: "challenge" },
+            { text: "Skull: 'Very well, hare. Let's race.'", type: "accept" },
+            { text: "The race begins! The hare dashes ahead!", type: "race_start" },
             { text: "The skull moves slowly but steadily...", type: "slow_skull" },
             { text: "The hare encounters a dark spirit offering power.", type: "scene1" },
+            { text: "Hare: 'I don't need your power, I'm winning!'", type: "scene1b" },
             { text: "The skull finds a cursed shortcut through the graveyard.", type: "scene2" },
             { text: "The hare meets other hares who doubt the skull.", type: "scene3" },
+            { text: "Other hares: 'You're racing a skull? How odd!'", type: "scene3b" },
             { text: "The skull crosses a bridge of bones.", type: "scene4" },
+            { text: "Skull: 'The bridge creaks but holds...'", type: "scene4b" },
             { text: "The hare sees the finish line and decides to rest.", type: "hare_rest" },
-            { text: "The hare falls asleep...", type: "hare_sleep" },
+            { text: "Hare: 'I'm so far ahead, I can sleep for a while...'", type: "hare_sleep" },
+            { text: "The hare falls into a deep sleep...", type: "sleep" },
             { text: "The skull approaches and sees the sleeping hare.", type: "skull_approach" },
+            { text: "Skull: 'The hare is asleep! And the finish line is right there!'", type: "realization" },
+            { text: "Skull: 'I could win... or I could win differently...'", type: "decision" },
             { text: "The skull draws its blade and strikes!", type: "kill" },
+            { text: "The skull jumps in victory!", type: "victory" },
         ];
 
         // Drawing functions
@@ -324,6 +401,11 @@
             for (let i = 0; i < 8; i++) {
                 drawGravestone(80 + i * 100, 400);
             }
+            
+            // Bridge of bones
+            if (storyPhase >= 12) {
+                drawBridge(400, 380);
+            }
         }
 
         function drawTree(x, y) {
@@ -345,6 +427,17 @@
             ctx.fillRect(x - 5, y - 18, 10, 3);
         }
 
+        function drawBridge(x, y) {
+            ctx.fillStyle = '#d4c5a9';
+            for (let i = 0; i < 5; i++) {
+                ctx.fillRect(x + i * 20, y, 15, 5);
+            }
+            ctx.fillStyle = '#fff';
+            for (let i = 0; i < 4; i++) {
+                ctx.fillRect(x + 10 + i * 20, y - 10, 5, 10);
+            }
+        }
+
         function drawFinishLine() {
             ctx.fillStyle = '#ff0000';
             for (let i = 0; i < 10; i++) {
@@ -352,6 +445,12 @@
             }
             ctx.fillStyle = '#fff';
             ctx.fillRect(750, 370, 2, 30);
+            
+            // Finish flag
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(745, 350, 20, 15);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(745, 355, 20, 5);
         }
 
         function drawRaceProgress() {
@@ -372,8 +471,19 @@
             drawRaceProgress();
             drawFinishLine();
             
-            skull.draw();
-            hare.draw();
+            // Draw characters with zoom if needed
+            if (cameraZoom && storyPhase === 19) {
+                // Zoom on skull during kill
+                skull.draw(true);
+                hare.draw();
+            } else if (cameraZoom && storyPhase === 20) {
+                // Zoom on skull victory jump
+                skull.draw(true);
+                hare.draw();
+            } else {
+                skull.draw();
+                hare.draw();
+            }
             
             // Draw blood if hare is killed
             if (hareKilled) {
@@ -389,36 +499,56 @@
             gameTime++;
             
             // Update story phase
-            if (gameTime % 300 === 0 && storyPhase < scenes.length - 1) {
+            if (gameTime % 250 === 0 && storyPhase < scenes.length - 1) {
                 storyPhase++;
                 storyText.textContent = scenes[storyPhase].text;
+                
+                // Special actions
+                if (storyPhase === 19) {
+                    // Kill scene
+                    cameraZoom = true;
+                    zoomTimer = 0;
+                } else if (storyPhase === 20) {
+                    // Victory jump
+                    skull.jumping = true;
+                    cameraZoom = true;
+                    zoomTimer = 0;
+                }
             }
             
             // Update positions based on story phase
-            if (storyPhase >= 2 && !hareKilled) {
-                if (storyPhase < 8) {
+            if (storyPhase >= 4 && !hareKilled) {
+                if (storyPhase < 13) {
                     // Hare runs fast
-                    hare.x += 2;
-                    skull.x += 0.3;
-                } else if (storyPhase === 8) {
+                    hare.x += 2.5;
+                    skull.x += 0.4;
+                } else if (storyPhase === 13) {
                     // Hare reaches near finish
                     hare.x = 650;
-                    storyText.textContent = "Hare says: 'I'm so far ahead, I can rest...'";
-                } else if (storyPhase === 9) {
+                    storyText.textContent = "Hare: 'I'm so far ahead, I can sleep for a while...'";
+                } else if (storyPhase === 14 || storyPhase === 15) {
                     // Hare sleeping
                     hareSleeping = true;
-                    skull.x += 0.5;
-                    storyText.textContent = "The hare fell asleep...";
-                } else if (storyPhase === 10) {
-                    skull.x += 0.5;
+                    skull.x += 0.6;
+                    storyText.textContent = "The hare fell into a deep sleep...";
+                } else if (storyPhase === 16 || storyPhase === 17) {
+                    skull.x += 0.6;
                     storyText.textContent = "The skull approaches the sleeping hare...";
-                } else if (storyPhase === 11) {
+                } else if (storyPhase === 18) {
+                    skull.x += 0.8;
+                    storyText.textContent = "Skull: 'The hare is asleep! The finish line is right there!'";
+                } else if (storyPhase === 19) {
                     if (skull.x >= hare.x - 20) {
                         hareKilled = true;
+                        hare.headless = true;
                         storyText.textContent = "The skull strikes! The hare is dead!";
                     } else {
-                        skull.x += 1;
+                        skull.x += 1.5;
                     }
+                } else if (storyPhase === 20) {
+                    // Victory jump
+                    skull.jumping = true;
+                    storyText.textContent = "SKULL: 'VICTORY! VICTORY IS MINE!'";
                 }
             }
             
@@ -426,14 +556,14 @@
             raceProgress = Math.max(skull.x - 50, hare.x - 50) / 700;
             
             // Check for moral
-            if (hareKilled && !moralShown) {
+            if (hareKilled && !moralShown && storyPhase === 20) {
                 moralShown = true;
                 setTimeout(() => {
                     moralDiv.style.display = 'block';
                     moralDiv.innerHTML = "MORAL OF THE STORY:<br><br>DON'T TRUST EVEN YOURSELF.<br>THE DARKNESS LIES WITHIN US ALL.<br><br>CLICK TO RESTART";
                     moralDiv.style.cursor = 'pointer';
                     moralDiv.onclick = restartGame;
-                }, 1000);
+                }, 2000);
             }
             
             drawAnimation();
@@ -449,9 +579,79 @@
             gameStarted = true;
             storyPhase = 0;
             storyText.textContent = scenes[0].text;
+            initAudio();
             updateGame();
         }
 
+        // Music functions
+        function initAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            startMusic();
+        }
+
+        function startMusic() {
+            if (!musicOn) return;
+            
+            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+            let noteIndex = 0;
+            
+            musicInterval = setInterval(() => {
+                if (!musicOn) return;
+                
+                // Create oscillator for melody
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                // Dark melody pattern
+                const melody = [0, 2, 4, 2, 0, 3, 5, 3, 0, 2, 4, 2, 7, 5, 4, 2];
+                const note = melody[noteIndex % melody.length];
+                
+                osc.frequency.value = notes[note] / 2; // Lower octave for dark feel
+                osc.type = 'square';
+                
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.3);
+                
+                noteIndex++;
+                
+                // Add bass note
+                if (noteIndex % 4 === 0) {
+                    const bassOsc = audioCtx.createOscillator();
+                    const bassGain = audioCtx.createGain();
+                    
+                    bassOsc.connect(bassGain);
+                    bassGain.connect(audioCtx.destination);
+                    
+                    bassOsc.frequency.value = notes[0] / 4;
+                    bassOsc.type = 'sawtooth';
+                    
+                    bassGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    bassGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    
+                    bassOsc.start(audioCtx.currentTime);
+                    bassOsc.stop(audioCtx.currentTime + 0.5);
+                }
+            }, 250);
+        }
+
+        function toggleMusic() {
+            musicOn = !musicOn;
+            musicToggle.textContent = musicOn ? 'MUSIC: ON' : 'MUSIC: OFF';
+            
+            if (!musicOn && musicInterval) {
+                clearInterval(musicInterval);
+            } else if (musicOn && gameStarted) {
+                startMusic();
+            }
+        }
+
+        musicToggle.addEventListener('click', toggleMusic);
         titleScreen.addEventListener('click', startGame);
 
         // Initial draw
