@@ -19,192 +19,108 @@
 body {
     background: #050505;
     min-height: 100vh;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     overflow: hidden;
-
     font-family: 'Press Start 2P', monospace;
 }
 
 #game-container {
     position: relative;
-
     width: 960px;
     height: 600px;
-
     max-width: 100vw;
     max-height: 100vh;
-
     overflow: hidden;
-
     background: #080912;
-
     border: 4px solid #35353d;
-
-    box-shadow:
-        0 0 35px rgba(120,0,0,.35),
-        inset 0 0 50px rgba(0,0,0,.9);
+    box-shadow: 0 0 35px rgba(120,0,0,.35), inset 0 0 50px rgba(0,0,0,.9);
 }
 
 canvas {
     display: block;
-
     width: 100%;
     height: 100%;
-
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
 
 #story-text {
-
     position: absolute;
-
     z-index: 20;
-
     left: 50%;
     bottom: 14px;
-
     transform: translateX(-50%);
-
     width: 88%;
-
     min-height: 54px;
-
     padding: 12px 18px;
-
-    background:
-        linear-gradient(
-            rgba(4,4,7,.94),
-            rgba(12,8,10,.96)
-        );
-
+    background: linear-gradient(rgba(4,4,7,.94), rgba(12,8,10,.96));
     border: 2px solid #777;
-
-    box-shadow:
-        0 0 0 3px #111,
-        0 5px 25px rgba(0,0,0,.8);
-
+    box-shadow: 0 0 0 3px #111, 0 5px 25px rgba(0,0,0,.8);
     color: #f1eeee;
-
     font-size: 11px;
-
     line-height: 1.7;
-
     text-align: center;
-
     pointer-events: none;
 }
 
 #title-screen {
-
     position: absolute;
-
     inset: 0;
-
     z-index: 50;
-
     display: flex;
-
     flex-direction: column;
-
     justify-content: center;
-
     align-items: center;
-
     text-align: center;
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(60,0,0,.25),
-            rgba(0,0,0,.98) 70%
-        );
-
+    background: radial-gradient(circle at center, rgba(60,0,0,.25), rgba(0,0,0,.98) 70%);
     cursor: pointer;
 }
 
 #title-screen h1 {
-
     color: #d00000;
-
     font-size: 30px;
-
     line-height: 1.7;
-
-    text-shadow:
-        3px 3px 0 #240000,
-        0 0 25px #900000,
-        0 0 60px #500000;
-
+    text-shadow: 3px 3px 0 #240000, 0 0 25px #900000, 0 0 60px #500000;
     animation: titlePulse 2.5s infinite;
 }
 
 #title-screen p {
-
     margin-top: 40px;
-
     color: #aaa;
-
     font-size: 11px;
-
     animation: blink 1.2s infinite;
 }
 
 #moral {
-
     position: absolute;
-
     z-index: 60;
-
     left: 50%;
     top: 50%;
-
     transform: translate(-50%, -50%);
-
     width: 75%;
-
     padding: 28px;
-
     background: rgba(0,0,0,.95);
-
     border: 3px solid #a00000;
-
     color: #ff3333;
-
     text-align: center;
-
     font-size: 13px;
-
     line-height: 2;
-
     display: none;
 }
 
-@keyframes blink {
-
-    0%,100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: .2;
-    }
+#flash {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
 }
 
-@keyframes titlePulse {
-
-    0%,100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.025);
-    }
-}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
+@keyframes titlePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 
 </style>
 </head>
@@ -215,34 +131,29 @@ canvas {
 
 <canvas id="gameCanvas"></canvas>
 
+<div id="flash"></div>
+
 <div id="story-text"></div>
 
 <div id="moral">
-
     MORAL OF THE STORY
-
     <br><br>
-
-    PRIDE CAN MAKE EVEN THE FASTEST CREATURE
+    BEWARE OF PRIDE.
+    <br><br>
+    EVEN THE FASTEST CAN FALL…
     <br>
-    FORGET THAT TIME NEVER STOPS.
-
+    WHEN THEY STOP RUNNING.
     <br><br>
-
     CLICK TO RESTART
-
 </div>
 
 <div id="title-screen">
-
     <h1>
-        DARK PIXEL TALE
-        <br>
         THE SKULL & THE HARE
+        <br>
+        THE ETERNAL RACE
     </h1>
-
     <p>CLICK TO BEGIN</p>
-
 </div>
 
 </div>
@@ -254,30 +165,16 @@ canvas {
    CANVAS
 ========================================================= */
 
-const canvas =
-    document.getElementById("gameCanvas");
-
-const ctx =
-    canvas.getContext("2d");
-
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 canvas.width = 960;
 canvas.height = 600;
-
 ctx.imageSmoothingEnabled = false;
 
-
-/* =========================================================
-   UI
-========================================================= */
-
-const storyText =
-    document.getElementById("story-text");
-
-const titleScreen =
-    document.getElementById("title-screen");
-
-const moral =
-    document.getElementById("moral");
+const storyText = document.getElementById("story-text");
+const titleScreen = document.getElementById("title-screen");
+const moral = document.getElementById("moral");
+const flashEl = document.getElementById("flash");
 
 
 /* =========================================================
@@ -285,25 +182,27 @@ const moral =
 ========================================================= */
 
 let gameStarted = false;
-
 let sceneIndex = 0;
-
 let sceneTimer = 0;
-
 let totalTime = 0;
 
 let cameraX = 0;
-
 let cameraTarget = 0;
-
 let cameraShake = 0;
 
-let particles = [];
+// cinematic zoom (close-up simulation)
+let camZoom = 1;
+let camZoomTarget = 1;
+
+let particles = [];   // dust / impact bursts
+let ambient = [];      // fireflies, leaves, bats, fog (continuous atmosphere)
 
 let hareDead = false;
+let hareSleeping = false;
+let hareLookBack = false;
+let bladeRaised = false;
 
-let deathFrame = 0;
-
+let flashAlpha = 0;
 let endingShown = false;
 
 
@@ -311,174 +210,93 @@ let endingShown = false;
    WORLD
 ========================================================= */
 
-const WORLD_WIDTH = 2800;
-
-const BRIDGE_START = 1200;
-
-const BRIDGE_END = 1580;
-
-const FINISH_LINE = 2350;
+const WORLD_WIDTH   = 3200;
+const GRAVE_START    = 760;
+const GRAVE_END      = 1080;
+const BRIDGE_START  = 1300;
+const BRIDGE_END    = 1680;
+const FINISH_LINE   = 2850; // long open road/hills between bridge and finish, per the script
 
 
 /* =========================================================
-   STORY
+   STORY  (mirrors the 16-scene script + final moral)
 ========================================================= */
 
+// scene "type" drives both the update() and draw() logic below.
+// zoom:true  -> simulate a dramatic close-up push-in during dialogue.
 const scenes = [
 
-{
-    type: "opening",
-    duration: 300,
-    text:
-    "Deep inside a cursed forest, the Hare discovered something that made him laugh."
-},
+{ type:"opening", zoom:false, duration:260,
+  text:"A twisted ancient forest under a blood-red moon. Fog drifts between crooked trees." },
 
-{
-    type: "mock",
-    duration: 320,
-    text:
-    "HARE: \"You call yourself Death? You are far too slow to ever catch me!\""
-},
+{ type:"hare_taunt", zoom:true, duration:300,
+  text:"HARE: \"HAHA! Death? You could never catch me! You're far too slow!\"" },
 
-{
-    type: "death_reply",
-    duration: 300,
-    text:
-    "The Skull slowly raised its head. It had existed longer than the forest itself."
-},
+{ type:"skull_reveal", zoom:true, duration:240,
+  text:"The Skull slowly raises its head. Its red eyes begin to glow." },
 
-{
-    type: "challenge",
-    duration: 320,
-    text:
-    "SKULL: \"Then let us settle this properly. I challenge you to a race.\""
-},
+{ type:"skull_challenge", zoom:true, duration:340,
+  text:"SKULL: \"Slow? I am eternal. If you believe you are faster than death... then race me.\"" },
 
-{
-    type: "ready",
-    duration: 250,
-    text:
-    "The Hare laughed again. Neither creature realized what the race would become."
-},
+{ type:"hare_accept", zoom:true, duration:220,
+  text:"HARE: \"You're on!\"" },
 
-{
-    type: "race_start",
-    duration: 380,
-    text:
-    "The race began."
-},
+{ type:"race_start", zoom:false, duration:260,
+  text:"The Hare explodes forward at incredible speed. Dust and leaves fly behind it." },
 
-{
-    type: "hare_leads",
-    duration: 420,
-    text:
-    "The Hare sprinted ahead with incredible speed."
-},
+{ type:"hare_leads", zoom:false, duration:340,
+  text:"HARE: \"That skull is nowhere near me!\" It accelerates even more." },
 
-{
-    type: "skull_chases",
-    duration: 500,
-    text:
-    "The Skull followed. Never rushing. Never stopping."
-},
+{ type:"skull_chases", zoom:false, duration:360,
+  text:"The Skull runs, noticeably slower — but steady, and relentless." },
 
-{
-    type: "hare_far_ahead",
-    duration: 400,
-    text:
-    "The Hare looked behind him. The Skull was still far away."
-},
+{ type:"spirit_offer", zoom:true, duration:300,
+  text:"A shadowy spirit appears. HARE: \"I don't need your power. I'm already winning!\"" },
 
-{
-    type: "bridge",
-    duration: 450,
-    text:
-    "The Skull reached the ancient bridge of bones and crossed it without slowing down."
-},
+{ type:"graveyard_shortcut", zoom:false, duration:380,
+  text:"The Skull discovers a cursed shortcut through an old graveyard. Ghostly hands emerge from the ground — it does not hesitate." },
 
-{
-    type: "hare_beyond_bridge",
-    duration: 350,
-    text:
-    "Far beyond the bridge, the Hare finally reached a quiet meadow."
-},
+{ type:"hare_group_brag", zoom:true, duration:320,
+  text:"HARE: \"I'm racing a skull! I'll reach the finish line long before that slow skeleton!\"" },
 
-{
-    type: "reflection",
-    duration: 350,
-    text:
-    "HARE: \"How am I going so fast? I've gained so much ground.\""
-},
+{ type:"bridge", zoom:false, duration:400,
+  text:"The Skull reaches the bridge of bones. It cracks and collapses behind every step, but the Skull keeps running." },
 
-{
-    type: "decision_rest",
-    duration: 350,
-    text:
-    "HARE: \"I have plenty of time. I'll rest here and continue when Death gets closer.\""
-},
+{ type:"hare_beyond_bridge", zoom:false, duration:300,
+  text:"Far beyond the bridge, the Hare sees the distant finish line. It looks back — no sign of the Skull." },
 
-{
-    type: "sleep",
-    duration: 450,
-    text:
-    "The Hare closed his eyes. His confidence slowly became sleep."
-},
+{ type:"reflection", zoom:true, duration:280,
+  text:"HARE: \"I've gone so fast... there's no way that slow skull can catch me now.\"" },
 
-{
-    type: "skull_approaches",
-    duration: 550,
-    text:
-    "Meanwhile, the Skull continued walking through the darkness."
-},
+{ type:"decision_rest", zoom:true, duration:260,
+  text:"HARE: \"I have plenty of time to rest... then I'll continue.\"" },
 
-{
-    type: "skull_sees_hare",
-    duration: 350,
-    text:
-    "At last, the Skull saw the sleeping Hare."
-},
+{ type:"sleep", zoom:false, duration:380,
+  text:"The Hare lies down beside the road and closes its eyes. A gentle breeze moves its ears." },
 
-{
-    type: "choice",
-    duration: 350,
-    text:
-    "SKULL: \"You believed your speed could outrun time itself.\""
-},
+{ type:"skull_approaches", zoom:false, duration:420,
+  text:"The Skull is still running. Dust covers its bones, but its red eyes remain glowing." },
 
-{
-    type: "blade",
-    duration: 180,
-    text:
-    "The Skull slowly drew its ancient blade."
-},
+{ type:"skull_sees_hare", zoom:true, duration:260,
+  text:"The Skull stops. It has found the sleeping Hare." },
 
-{
-    type: "strike",
-    duration: 120,
-    text:
-    "The blade fell."
-},
+{ type:"choice", zoom:true, duration:340,
+  text:"SKULL: \"You were faster. But you forgot one thing — Death never gets tired.\"" },
 
-{
-    type: "death",
-    duration: 300,
-    text:
-    "The Hare never woke."
-},
+{ type:"blade", zoom:true, duration:170,
+  text:"The Skull slowly draws its curved blade." },
 
-{
-    type: "victory",
-    duration: 400,
-    text:
-    "The Skull continued toward the distant finish line."
-},
+{ type:"strike", zoom:true, duration:90,
+  text:"The blade falls." },
 
-{
-    type: "ending",
-    duration: 500,
-    text:
-    "Death had never been fast. It had simply never stopped walking."
-}
+{ type:"death", zoom:false, duration:260,
+  text:"The Hare never woke." },
+
+{ type:"victory", zoom:false, duration:340,
+  text:"The Skull raises its arms, then walks on toward the distant finish line." },
+
+{ type:"ending", zoom:false, duration:420,
+  text:"The dead Hare remains behind. The red moon hangs above the road. Death had never been fast — it had simply never stopped walking." }
 
 ];
 
@@ -490,310 +308,121 @@ const scenes = [
 class Skull {
 
     constructor() {
-
         this.x = 260;
-
         this.y = 395;
-
         this.frame = 0;
-
         this.timer = 0;
-
         this.walkCycle = 0;
-
-        this.breath = 0;
     }
 
     update(running = false) {
-
-        this.breath += .08;
-
         if (running) {
-
             this.timer++;
-
             if (this.timer >= 6) {
-
                 this.timer = 0;
-
-                this.frame =
-                    this.frame === 0
-                    ? 1
-                    : 0;
+                this.frame = this.frame === 0 ? 1 : 0;
             }
-
             this.walkCycle += .15;
         }
     }
 
-    draw(scale = 1) {
+    draw(scale = 1, raised = false) {
 
-        const bob =
-            Math.sin(this.walkCycle) * 2;
-
-        const x =
-            this.x - cameraX;
-
-        const y =
-            this.y + bob;
+        const bob = Math.sin(this.walkCycle) * 2;
+        const x = this.x - cameraX;
+        const y = this.y + bob;
 
         ctx.save();
-
         ctx.translate(x, y);
-
         ctx.scale(scale, scale);
 
-
         /* shadow */
-
-        ctx.fillStyle =
-            "rgba(0,0,0,.45)";
-
-        ctx.fillRect(
-            -25,
-            7,
-            55,
-            8
-        );
-
+        ctx.fillStyle = "rgba(0,0,0,.45)";
+        ctx.fillRect(-25, 7, 55, 8);
 
         /* cloak */
-
         ctx.fillStyle = "#17171d";
-
-        ctx.fillRect(
-            -24,
-            -30,
-            48,
-            85
-        );
-
+        ctx.fillRect(-24, -30, 48, 85);
         ctx.fillStyle = "#292930";
-
-        ctx.fillRect(
-            -30,
-            -25,
-            9,
-            70
-        );
-
-        ctx.fillRect(
-            21,
-            -25,
-            9,
-            70
-        );
-
+        ctx.fillRect(-30, -25, 9, 70);
+        ctx.fillRect(21, -25, 9, 70);
 
         /* hood */
-
         ctx.fillStyle = "#35353d";
-
-        ctx.fillRect(
-            -30,
-            -78,
-            60,
-            50
-        );
-
-        ctx.fillRect(
-            -22,
-            -87,
-            44,
-            12
-        );
-
+        ctx.fillRect(-30, -78, 60, 50);
+        ctx.fillRect(-22, -87, 44, 12);
 
         /* skull */
-
         ctx.fillStyle = "#ddd7c9";
-
-        ctx.fillRect(
-            -20,
-            -68,
-            40,
-            39
-        );
-
-        ctx.fillRect(
-            -14,
-            -74,
-            28,
-            8
-        );
-
-
-        /* skull shadows */
+        ctx.fillRect(-20, -68, 40, 39);
+        ctx.fillRect(-14, -74, 28, 8);
 
         ctx.fillStyle = "#99938a";
-
-        ctx.fillRect(
-            -20,
-            -36,
-            40,
-            8
-        );
-
-        ctx.fillRect(
-            -16,
-            -65,
-            6,
-            25
-        );
-
-        ctx.fillRect(
-            10,
-            -65,
-            6,
-            25
-        );
-
+        ctx.fillRect(-20, -36, 40, 8);
+        ctx.fillRect(-16, -65, 6, 25);
+        ctx.fillRect(10, -65, 6, 25);
 
         /* eyes */
-
         ctx.fillStyle = "#050505";
-
-        ctx.fillRect(
-            -14,
-            -60,
-            10,
-            10
-        );
-
-        ctx.fillRect(
-            4,
-            -60,
-            10,
-            10
-        );
-
-
-        /* red eyes */
+        ctx.fillRect(-14, -60, 10, 10);
+        ctx.fillRect(4, -60, 10, 10);
 
         ctx.fillStyle = "#df0000";
+        ctx.fillRect(-11, -57, 4, 4);
+        ctx.fillRect(7, -57, 4, 4);
 
-        ctx.fillRect(
-            -11,
-            -57,
-            4,
-            4
-        );
-
-        ctx.fillRect(
-            7,
-            -57,
-            4,
-            4
-        );
-
+        /* subtle eye glow (visual style: "eyes glow faintly red") */
+        ctx.globalAlpha = .35;
+        ctx.beginPath();
+        ctx.arc(-9, -55, 7, 0, Math.PI * 2);
+        ctx.arc(9, -55, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
 
         /* nose */
-
         ctx.fillStyle = "#111";
-
-        ctx.fillRect(
-            -4,
-            -47,
-            8,
-            6
-        );
-
+        ctx.fillRect(-4, -47, 8, 6);
 
         /* teeth */
-
         ctx.fillStyle = "#f5f2e9";
-
-        for (
-            let i = 0;
-            i < 5;
-            i++
-        ) {
-
-            ctx.fillRect(
-                -14 + i * 6,
-                -36,
-                4,
-                7
-            );
+        for (let i = 0; i < 5; i++) {
+            ctx.fillRect(-14 + i * 6, -36, 4, 7);
         }
-
 
         /* walking arms */
-
-        const swing =
-            this.frame === 0 ? 5 : -5;
-
+        const swing = this.frame === 0 ? 5 : -5;
         ctx.fillStyle = "#222229";
+        ctx.fillRect(-34, -20 + swing, 9, 45);
 
-        ctx.fillRect(
-            -34,
-            -20 + swing,
-            9,
-            45
-        );
-
-        ctx.fillRect(
-            25,
-            -20 - swing,
-            9,
-            45
-        );
-
+        if (!raised) {
+            ctx.fillRect(25, -20 - swing, 9, 45);
+        }
 
         /* legs */
+        ctx.fillRect(-18, 42 + swing, 10, 28);
+        ctx.fillRect(8, 42 - swing, 10, 28);
 
-        ctx.fillRect(
-            -18,
-            42 + swing,
-            10,
-            28
-        );
-
-        ctx.fillRect(
-            8,
-            42 - swing,
-            10,
-            28
-        );
-
-
-        /* blade */
-
-        if (
-            sceneIndex >= 17 &&
-            !hareDead
-        ) {
-
-            ctx.fillStyle =
-                "#c9c9c9";
-
-            ctx.fillRect(
-                35,
-                -40,
-                6,
-                85
-            );
-
-            ctx.fillStyle =
-                "#ffffff";
-
-            ctx.fillRect(
-                41,
-                -40,
-                3,
-                65
-            );
-
-            ctx.fillStyle =
-                "#5b2929";
-
-            ctx.fillRect(
-                31,
-                40,
-                20,
-                6
-            );
+        /* curved bone blade — always carried, per the character design */
+        ctx.save();
+        if (raised) {
+            // raised overhead for the strike
+            ctx.translate(30, -55);
+            ctx.rotate(-0.9);
+        } else {
+            // sheathed at the side while walking/running
+            ctx.translate(34, -5);
+            ctx.rotate(0.15);
         }
+        ctx.fillStyle = "#c9c9c9";
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(18, 35, 6, 78);
+        ctx.quadraticCurveTo(-2, 40, -4, 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = "#5b2929";
+        ctx.fillRect(-6, -14, 12, 16);
+        ctx.restore();
 
         ctx.restore();
     }
@@ -807,875 +436,551 @@ class Skull {
 class Hare {
 
     constructor() {
-
         this.x = 420;
-
         this.y = 400;
-
         this.frame = 0;
-
         this.timer = 0;
-
         this.runCycle = 0;
-
-        this.sleeping = false;
-
-        this.lookBack = false;
     }
 
     update(running = false) {
-
         if (!running) return;
-
         this.timer++;
-
         if (this.timer >= 4) {
-
             this.timer = 0;
-
-            this.frame =
-                this.frame === 0
-                ? 1
-                : 0;
+            this.frame = this.frame === 0 ? 1 : 0;
         }
-
         this.runCycle += .25;
     }
 
     draw(scale = 1) {
 
-        const x =
-            this.x - cameraX;
-
-        const y =
-            this.y +
-            Math.sin(this.runCycle) * 2;
+        const x = this.x - cameraX;
+        const y = this.y + Math.sin(this.runCycle) * 2;
 
         ctx.save();
-
         ctx.translate(x, y);
-
         ctx.scale(scale, scale);
 
+        ctx.fillStyle = "rgba(0,0,0,.4)";
+        ctx.fillRect(-35, 5, 75, 9);
 
-        /* shadow */
-
-        ctx.fillStyle =
-            "rgba(0,0,0,.4)";
-
-        ctx.fillRect(
-            -35,
-            5,
-            75,
-            9
-        );
-
-
-        if (this.sleeping) {
-
+        if (hareSleeping) {
             this.drawSleeping();
-
+        } else if (hareDead && sceneIndex >= scenes.findIndex(s=>s.type==="death")) {
+            this.drawDead();
         } else {
-
             this.drawRunning();
         }
 
         ctx.restore();
     }
 
-
     drawRunning() {
 
-        const leg =
-            this.frame === 0
-            ? 0
-            : 10;
-
-
-        /* rear body */
+        const leg = this.frame === 0 ? 0 : 10;
 
         ctx.fillStyle = "#8f4b28";
-
-        ctx.fillRect(
-            -32,
-            -45,
-            55,
-            43
-        );
-
-
-        /* belly */
+        ctx.fillRect(-32, -45, 55, 43);
 
         ctx.fillStyle = "#b86a3c";
-
-        ctx.fillRect(
-            -20,
-            -36,
-            34,
-            30
-        );
-
-
-        /* rear leg */
+        ctx.fillRect(-20, -36, 34, 30);
 
         ctx.fillStyle = "#713b20";
-
-        ctx.fillRect(
-            -22,
-            -8 + leg,
-            13,
-            38 - leg
-        );
-
-
-        /* front leg */
-
-        ctx.fillRect(
-            8,
-            -8 - leg,
-            13,
-            38 + leg
-        );
-
-
-        /* head */
+        ctx.fillRect(-22, -8 + leg, 13, 38 - leg);
+        ctx.fillRect(8, -8 - leg, 13, 38 + leg);
 
         ctx.fillStyle = "#a75a31";
-
-        ctx.fillRect(
-            12,
-            -70,
-            43,
-            34
-        );
-
-
-        /* ears */
+        ctx.fillRect(12, -70, 43, 34);
 
         ctx.fillStyle = "#7d4023";
-
-        ctx.fillRect(
-            17,
-            -118,
-            12,
-            50
-        );
-
-        ctx.fillRect(
-            38,
-            -125,
-            13,
-            57
-        );
-
-
-        /* inner ears */
+        ctx.fillRect(17, -118, 12, 50);
+        ctx.fillRect(38, -125, 13, 57);
 
         ctx.fillStyle = "#d98c8c";
-
-        ctx.fillRect(
-            21,
-            -109,
-            5,
-            32
-        );
-
-        ctx.fillRect(
-            42,
-            -116,
-            5,
-            36
-        );
-
-
-        /* eye */
+        ctx.fillRect(21, -109, 5, 32);
+        ctx.fillRect(42, -116, 5, 36);
 
         ctx.fillStyle = "#080505";
-
-        ctx.fillRect(
-            38,
-            -59,
-            8,
-            8
-        );
-
+        ctx.fillRect(38, -59, 8, 8);
         ctx.fillStyle = "#fff";
-
-        ctx.fillRect(
-            40,
-            -58,
-            2,
-            2
-        );
-
-
-        /* nose */
+        ctx.fillRect(40, -58, 2, 2);
 
         ctx.fillStyle = "#e78b93";
-
-        ctx.fillRect(
-            51,
-            -48,
-            7,
-            5
-        );
-
-
-        /* tail */
+        ctx.fillRect(51, -48, 7, 5);
 
         ctx.fillStyle = "#eee";
+        ctx.fillRect(-42, -38, 18, 18);
 
-        ctx.fillRect(
-            -42,
-            -38,
-            18,
-            18
-        );
-
-
-        /*
-        When looking back, the hare turns
-        his head toward the Skull.
-        */
-
-        if (this.lookBack) {
-
+        // occasionally looks back while running, per the script
+        if (hareLookBack) {
             ctx.fillStyle = "#080505";
-
-            ctx.fillRect(
-                20,
-                -59,
-                8,
-                8
-            );
+            ctx.fillRect(20, -59, 8, 8);
         }
     }
 
-
     drawSleeping() {
 
-        /* body lying horizontally */
-
         ctx.fillStyle = "#8f4b28";
-
-        ctx.fillRect(
-            -65,
-            -15,
-            95,
-            27
-        );
+        ctx.fillRect(-65, -15, 95, 27);
 
         ctx.fillStyle = "#b86a3c";
-
-        ctx.fillRect(
-            -45,
-            -11,
-            55,
-            20
-        );
-
-
-        /* head */
+        ctx.fillRect(-45, -11, 55, 20);
 
         ctx.fillStyle = "#a75a31";
-
-        ctx.fillRect(
-            15,
-            -28,
-            45,
-            30
-        );
-
-
-        /* ears lying down */
+        ctx.fillRect(15, -28, 45, 30);
 
         ctx.fillStyle = "#7d4023";
-
-        ctx.fillRect(
-            25,
-            -50,
-            35,
-            10
-        );
-
-        ctx.fillRect(
-            42,
-            -61,
-            30,
-            10
-        );
-
-
-        /* closed eye */
+        ctx.fillRect(25, -50, 35, 10);
+        ctx.fillRect(42, -61, 30, 10);
 
         ctx.fillStyle = "#160606";
-
-        ctx.fillRect(
-            43,
-            -13,
-            10,
-            3
-        );
-
-
-        /* tail */
+        ctx.fillRect(43, -13, 10, 3);
 
         ctx.fillStyle = "#eee";
-
-        ctx.fillRect(
-            -68,
-            -12,
-            18,
-            18
-        );
-
-
-        /* Z */
+        ctx.fillRect(-68, -12, 18, 18);
 
         ctx.fillStyle = "#aaa";
+        ctx.font = "14px monospace";
+        const bob = Math.sin(totalTime * .05) * 3;
+        ctx.fillText("Z", 65, -55 + bob);
+        ctx.fillText("Z", 78, -72 + bob * .6);
+    }
 
-        ctx.font =
-            "14px monospace";
+    drawDead() {
 
-        ctx.fillText(
-            "Z",
-            65,
-            -55
-        );
+        ctx.fillStyle = "#79401f";
+        ctx.fillRect(-55, -10, 90, 25);
 
-        ctx.fillText(
-            "Z",
-            78,
-            -72
-        );
+        ctx.fillStyle = "#720d0d";
+        ctx.fillRect(18, -15, 18, 15);
+
+        ctx.fillStyle = "#a75a31";
+        ctx.fillRect(45, -42, 38, 29);
+
+        ctx.fillStyle = "#7d4023";
+        ctx.fillRect(52, -75, 11, 35);
+        ctx.fillRect(69, -82, 11, 42);
+
+        ctx.fillStyle = "#160606";
+        ctx.fillRect(69, -29, 9, 3);
+
+        ctx.fillStyle = "#a50000";
+        ctx.fillRect(30, -2, 5, 22);
+        ctx.fillRect(20, 5, 4, 15);
+        ctx.fillRect(38, 8, 4, 12);
     }
 }
 
 
-const skull =
-    new Skull();
-
-const hare =
-    new Hare();
+const skull = new Skull();
+const hare  = new Hare();
 
 
 /* =========================================================
-   PARTICLES
+   IMPACT / DUST PARTICLES
 ========================================================= */
 
-function spawnDust(
-    x,
-    y,
-    amount = 2
-) {
-
-    for (
-        let i = 0;
-        i < amount;
-        i++
-    ) {
-
+function spawnDust(x, y, amount = 2) {
+    for (let i = 0; i < amount; i++) {
         particles.push({
-
-            x:
-                x +
-                Math.random() * 15 -
-                7,
-
-            y:
-                y +
-                Math.random() * 5,
-
-            vx:
-                Math.random() * 1.8 -
-                .9,
-
-            vy:
-                -Math.random() * 1.2,
-
-            life:
-                25 +
-                Math.random() * 25
+            x: x + Math.random() * 15 - 7,
+            y: y + Math.random() * 5,
+            vx: Math.random() * 1.8 - .9,
+            vy: -Math.random() * 1.2,
+            life: 25 + Math.random() * 25,
+            color: "180,170,155"
         });
     }
 }
 
-
-function updateParticles() {
-
-    particles.forEach(p => {
-
-        p.x += p.vx;
-
-        p.y += p.vy;
-
-        p.vy += .04;
-
-        p.life--;
-    });
-
-    particles =
-        particles.filter(
-            p => p.life > 0
-        );
+function spawnBurst(x, y) {
+    for (let i = 0; i < 16; i++) {
+        particles.push({
+            x, y,
+            vx: Math.random() * 4 - 2,
+            vy: Math.random() * -3 - 1,
+            life: 30 + Math.random() * 20,
+            color: "150,0,0"
+        });
+    }
 }
 
+function updateParticles() {
+    particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += .04;
+        p.life--;
+    });
+    particles = particles.filter(p => p.life > 0);
+}
 
 function drawParticles() {
-
     particles.forEach(p => {
-
-        ctx.fillStyle =
-            `rgba(180,170,155,${
-                p.life / 50
-            })`;
-
-        ctx.fillRect(
-            Math.round(
-                p.x - cameraX
-            ),
-            Math.round(p.y),
-            3,
-            3
-        );
+        ctx.fillStyle = `rgba(${p.color},${Math.max(0, p.life / 50)})`;
+        ctx.fillRect(Math.round(p.x - cameraX), Math.round(p.y), 3, 3);
     });
 }
 
 
 /* =========================================================
-   BACKGROUND
+   AMBIENT ATMOSPHERE — fireflies, bats, falling leaves, fog
+   (screen-space, continuous, independent of the scene index —
+   this is the "world feels alive" layer from the visual style)
+========================================================= */
+
+function initAmbient() {
+    ambient = [];
+
+    for (let i = 0; i < 16; i++) {
+        ambient.push({
+            kind: "firefly",
+            x: Math.random() * 960,
+            y: 250 + Math.random() * 300,
+            vx: Math.random() * .3 - .15,
+            vy: Math.random() * .3 - .15,
+            phase: Math.random() * Math.PI * 2
+        });
+    }
+
+    for (let i = 0; i < 10; i++) {
+        ambient.push({
+            kind: "leaf",
+            x: Math.random() * 960,
+            y: Math.random() * -600,
+            vx: Math.random() * .6 - .3,
+            vy: .4 + Math.random() * .5,
+            rot: Math.random() * 6
+        });
+    }
+
+    for (let i = 0; i < 3; i++) {
+        ambient.push({
+            kind: "bat",
+            x: -100 - Math.random() * 500,
+            y: 60 + Math.random() * 120,
+            vx: 1 + Math.random() * .6,
+            flap: Math.random() * 10
+        });
+    }
+
+    for (let i = 0; i < 4; i++) {
+        ambient.push({
+            kind: "fog",
+            x: Math.random() * 1200 - 200,
+            y: 330 + Math.random() * 90,
+            vx: .12 + Math.random() * .1,
+            w: 260 + Math.random() * 200
+        });
+    }
+}
+
+function updateAmbient() {
+    ambient.forEach(a => {
+
+        if (a.kind === "firefly") {
+            a.phase += .08;
+            a.x += a.vx + Math.sin(a.phase) * .2;
+            a.y += a.vy;
+            if (a.x < -10) a.x = 970;
+            if (a.x > 970) a.x = -10;
+            if (a.y < 240) a.y = 560;
+            if (a.y > 560) a.y = 240;
+        }
+
+        if (a.kind === "leaf") {
+            a.x += a.vx + Math.sin(totalTime * .02 + a.rot) * .4;
+            a.y += a.vy;
+            a.rot += .03;
+            if (a.y > 600) {
+                a.y = -20;
+                a.x = Math.random() * 960;
+            }
+        }
+
+        if (a.kind === "bat") {
+            a.flap += .3;
+            a.x += a.vx;
+            a.y += Math.sin(a.flap) * .8;
+            if (a.x > 1100) {
+                a.x = -100;
+                a.y = 60 + Math.random() * 120;
+            }
+        }
+
+        if (a.kind === "fog") {
+            a.x += a.vx;
+            if (a.x > 1200) a.x = -400;
+        }
+    });
+}
+
+function drawAmbient() {
+
+    ambient.forEach(a => {
+
+        if (a.kind === "fog") {
+            const g = ctx.createLinearGradient(a.x, 0, a.x + a.w, 0);
+            g.addColorStop(0, "rgba(60,65,80,0)");
+            g.addColorStop(.5, "rgba(60,65,80,.10)");
+            g.addColorStop(1, "rgba(60,65,80,0)");
+            ctx.fillStyle = g;
+            ctx.fillRect(a.x, a.y, a.w, 55);
+        }
+    });
+
+    ambient.forEach(a => {
+
+        if (a.kind === "firefly") {
+            const glow = .4 + Math.sin(a.phase) * .3;
+            ctx.fillStyle = `rgba(230,220,120,${Math.max(.1, glow)})`;
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        if (a.kind === "leaf") {
+            ctx.save();
+            ctx.translate(a.x, a.y);
+            ctx.rotate(a.rot);
+            ctx.fillStyle = "#6e3420";
+            ctx.fillRect(-3, -3, 6, 6);
+            ctx.restore();
+        }
+
+        if (a.kind === "bat") {
+            const wing = Math.sin(a.flap) * 6;
+            ctx.fillStyle = "#000";
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(a.x - 8, a.y - wing);
+            ctx.lineTo(a.x - 3, a.y);
+            ctx.lineTo(a.x + 3, a.y);
+            ctx.lineTo(a.x + 8, a.y - wing);
+            ctx.lineTo(a.x, a.y);
+            ctx.fill();
+        }
+    });
+}
+
+
+/* =========================================================
+   BACKGROUND (world elements)
 ========================================================= */
 
 function drawBackground() {
 
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            600
-        );
-
-    gradient.addColorStop(
-        0,
-        "#050718"
-    );
-
-    gradient.addColorStop(
-        .55,
-        "#101329"
-    );
-
-    gradient.addColorStop(
-        1,
-        "#21171c"
-    );
-
+    const gradient = ctx.createLinearGradient(0, 0, 0, 600);
+    gradient.addColorStop(0, "#050718");
+    gradient.addColorStop(.55, "#101329");
+    gradient.addColorStop(1, "#21171c");
     ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 960, 600);
 
-    ctx.fillRect(
-        0,
-        0,
-        960,
-        600
-    );
-
-
-    /* moon */
-
-    const moonX =
-        760 -
-        cameraX * .06;
-
-    ctx.fillStyle =
-        "#d8c7a5";
-
+    const moonX = 760 - cameraX * .06;
+    ctx.fillStyle = "#d8c7a5";
     ctx.beginPath();
-
-    ctx.arc(
-        moonX,
-        95,
-        48,
-        0,
-        Math.PI * 2
-    );
-
+    ctx.arc(moonX, 95, 48, 0, Math.PI * 2);
     ctx.fill();
 
+    ctx.fillStyle = "#b5a88e";
+    ctx.fillRect(moonX - 20, 75, 10, 7);
+    ctx.fillRect(moonX + 12, 100, 14, 7);
 
-    /* moon craters */
-
-    ctx.fillStyle =
-        "#b5a88e";
-
-    ctx.fillRect(
-        moonX - 20,
-        75,
-        10,
-        7
-    );
-
-    ctx.fillRect(
-        moonX + 12,
-        100,
-        14,
-        7
-    );
-
-
-    /* distant mountains */
-
-    ctx.fillStyle =
-        "#0b0d18";
-
+    ctx.fillStyle = "#0b0d18";
     ctx.beginPath();
-
-    ctx.moveTo(
-        0,
-        380
-    );
-
-    for (
-        let x = 0;
-        x <= 960;
-        x += 70
-    ) {
-
-        const world =
-            x +
-            cameraX * .12;
-
-        const h =
-            60 +
-            Math.abs(
-                Math.sin(
-                    world * .025
-                )
-            ) * 100;
-
-        ctx.lineTo(
-            x,
-            380 - h
-        );
+    ctx.moveTo(0, 380);
+    for (let x = 0; x <= 960; x += 70) {
+        const world = x + cameraX * .12;
+        const h = 60 + Math.abs(Math.sin(world * .025)) * 100;
+        ctx.lineTo(x, 380 - h);
     }
-
-    ctx.lineTo(
-        960,
-        450
-    );
-
-    ctx.lineTo(
-        0,
-        450
-    );
-
+    ctx.lineTo(960, 450);
+    ctx.lineTo(0, 450);
     ctx.fill();
 
+    ctx.fillStyle = "#17151a";
+    ctx.fillRect(0, 390, 960, 210);
 
-    /* ground */
+    ctx.fillStyle = "#211d20";
+    ctx.fillRect(-cameraX, 410, WORLD_WIDTH, 100);
 
-    ctx.fillStyle =
-        "#17151a";
-
-    ctx.fillRect(
-        0,
-        390,
-        960,
-        210
-    );
-
-
-    /* road */
-
-    ctx.fillStyle =
-        "#211d20";
-
-    ctx.fillRect(
-        -cameraX,
-        410,
-        WORLD_WIDTH,
-        100
-    );
-
-
-    /* road texture */
-
-    for (
-        let x =
-            Math.floor(cameraX / 50) * 50;
-        x <
-            cameraX + 1000;
-        x += 50
-    ) {
-
-        ctx.fillStyle =
-            x % 100 === 0
-            ? "#383033"
-            : "#292428";
-
-        ctx.fillRect(
-            x - cameraX,
-            455,
-            24,
-            4
-        );
+    for (let x = Math.floor(cameraX / 50) * 50; x < cameraX + 1000; x += 50) {
+        ctx.fillStyle = x % 100 === 0 ? "#383033" : "#292428";
+        ctx.fillRect(x - cameraX, 455, 24, 4);
     }
-
 
     drawTrees();
-
+    drawGraveyard();
     drawBridge();
-
     drawFinishLine();
 }
 
 
-/* =========================================================
-   TREES
-========================================================= */
-
 function drawTrees() {
+    for (let x = Math.floor(cameraX / 130) * 130 - 130; x < cameraX + 1100; x += 130) {
 
-    for (
-        let x =
-            Math.floor(cameraX / 130) * 130 - 130;
+        // skip trees where the graveyard clearing sits, for readability
+        if (x > GRAVE_START - 60 && x < GRAVE_END + 60) continue;
 
-        x <
-            cameraX + 1100;
+        const sx = x - cameraX;
+        const h = 100 + Math.abs(Math.sin(x * .04)) * 100;
 
-        x += 130
-    ) {
+        ctx.fillStyle = "#26191a";
+        ctx.fillRect(sx, 390 - h, 16, h);
+        ctx.fillRect(sx - 25, 320 - h * .25, 65, 8);
 
-        const sx =
-            x - cameraX;
-
-        const h =
-            100 +
-            Math.abs(
-                Math.sin(
-                    x * .04
-                )
-            ) * 100;
-
-
-        /* trunk */
-
-        ctx.fillStyle =
-            "#26191a";
-
-        ctx.fillRect(
-            sx,
-            390 - h,
-            16,
-            h
-        );
-
-
-        /* branches */
-
-        ctx.fillRect(
-            sx - 25,
-            320 - h * .25,
-            65,
-            8
-        );
-
-
-        /* crown */
-
-        ctx.fillStyle =
-            "#0c1016";
-
-        ctx.fillRect(
-            sx - 35,
-            280 - h,
-            90,
-            65
-        );
-
-        ctx.fillRect(
-            sx - 15,
-            250 - h,
-            50,
-            35
-        );
+        ctx.fillStyle = "#0c1016";
+        ctx.fillRect(sx - 35, 280 - h, 90, 65);
+        ctx.fillRect(sx - 15, 250 - h, 50, 35);
     }
 }
 
 
-/* =========================================================
-   BRIDGE
-========================================================= */
+/* SCENE 6 — the cursed graveyard shortcut */
+function drawGraveyard() {
+
+    const sx = GRAVE_START - cameraX;
+    const width = GRAVE_END - GRAVE_START;
+    if (sx > 960 || sx + width < 0) return;
+
+    // clearing
+    ctx.fillStyle = "#111017";
+    ctx.fillRect(sx, 390, width, 80);
+
+    const inScene = scenes[sceneIndex].type === "graveyard_shortcut";
+
+    for (let i = 0; i < 6; i++) {
+        const gx = sx + 20 + i * 55;
+
+        ctx.fillStyle = "#8d887a";
+        ctx.fillRect(gx, 400, 26, 34);
+        ctx.beginPath();
+        ctx.arc(gx + 13, 400, 13, Math.PI, 0);
+        ctx.fill();
+
+        // ghostly hands emerge from the ground while the Skull crosses
+        if (inScene && (totalTime + i * 13) % 90 < 45) {
+            ctx.strokeStyle = "rgba(150,220,210,.55)";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(gx + 13, 434);
+            ctx.lineTo(gx + 8, 415);
+            ctx.moveTo(gx + 13, 434);
+            ctx.lineTo(gx + 18, 413);
+            ctx.stroke();
+        }
+    }
+}
+
 
 function drawBridge() {
 
-    const sx =
-        BRIDGE_START -
-        cameraX;
+    const sx = BRIDGE_START - cameraX;
+    const width = BRIDGE_END - BRIDGE_START;
+    if (sx > 960 || sx + width < 0) return;
 
-    const width =
-        BRIDGE_END -
-        BRIDGE_START;
+    ctx.fillStyle = "#040407";
+    ctx.fillRect(sx, 400, width, 150);
 
-
-    if (
-        sx > 960 ||
-        sx + width < 0
-    ) return;
-
-
-    /* abyss */
-
-    ctx.fillStyle =
-        "#040407";
-
-    ctx.fillRect(
-        sx,
-        400,
-        width,
-        150
-    );
-
-
-    /* bridge bones */
-
-    for (
-        let i = 0;
-        i < 19;
-        i++
-    ) {
-
-        const x =
-            sx +
-            i * 20;
-
-        ctx.fillStyle =
-            i % 2 === 0
-            ? "#c5b99f"
-            : "#8d806b";
-
-        ctx.fillRect(
-            x,
-            425,
-            18,
-            9
-        );
-
-        ctx.fillRect(
-            x + 7,
-            433,
-            5,
-            20
-        );
+    for (let i = 0; i < 19; i++) {
+        const x = sx + i * 20;
+        ctx.fillStyle = i % 2 === 0 ? "#c5b99f" : "#8d806b";
+        ctx.fillRect(x, 425, 18, 9);
+        ctx.fillRect(x + 7, 433, 5, 20);
     }
 
+    for (let i = 0; i < 7; i++) {
+        const x = sx + i * 60;
+        ctx.fillStyle = "#aaa08c";
+        ctx.fillRect(x, 385, 7, 42);
+        ctx.fillRect(x, 385, 35, 7);
+    }
 
-    /* side rails */
-
-    for (
-        let i = 0;
-        i < 7;
-        i++
-    ) {
-
-        const x =
-            sx +
-            i * 60;
-
-        ctx.fillStyle =
-            "#aaa08c";
-
-        ctx.fillRect(
-            x,
-            385,
-            7,
-            42
-        );
-
-        ctx.fillRect(
-            x,
-            385,
-            35,
-            7
-        );
+    // a section has already collapsed behind the Skull
+    if (scenes[sceneIndex].type === "bridge" && skull.x > BRIDGE_START + 90) {
+        ctx.fillStyle = "#040407";
+        ctx.fillRect(sx, 425, 90, 30);
     }
 }
 
 
-/* =========================================================
-   FINISH LINE
-========================================================= */
-
 function drawFinishLine() {
 
-    const sx =
-        FINISH_LINE -
-        cameraX;
+    const sx = FINISH_LINE - cameraX;
+    if (sx < -150 || sx > 1100) return;
 
-    if (
-        sx < -150 ||
-        sx > 1100
-    ) return;
-
-
-    /* checker road */
-
-    for (
-        let i = 0;
-        i < 16;
-        i++
-    ) {
-
-        ctx.fillStyle =
-            i % 2 === 0
-            ? "#eee"
-            : "#222";
-
-        ctx.fillRect(
-            sx,
-            410 + i * 5,
-            28,
-            5
-        );
+    for (let i = 0; i < 16; i++) {
+        ctx.fillStyle = i % 2 === 0 ? "#eee" : "#222";
+        ctx.fillRect(sx, 410 + i * 5, 28, 5);
     }
 
+    ctx.fillStyle = "#bbb";
+    ctx.fillRect(sx + 20, 230, 6, 180);
 
-    /* pole */
-
-    ctx.fillStyle =
-        "#bbb";
-
-    ctx.fillRect(
-        sx + 20,
-        230,
-        6,
-        180
-    );
-
-
-    /* flag */
-
-    ctx.fillStyle =
-        "#a00000";
-
+    ctx.fillStyle = "#a00000";
     ctx.beginPath();
-
-    ctx.moveTo(
-        sx + 26,
-        235
-    );
-
-    ctx.lineTo(
-        sx + 110,
-        260
-    );
-
-    ctx.lineTo(
-        sx + 26,
-        290
-    );
-
+    ctx.moveTo(sx + 26, 235);
+    ctx.lineTo(sx + 110, 260);
+    ctx.lineTo(sx + 26, 290);
     ctx.fill();
+}
+
+
+/* SCENE 5 — the dark spirit offering supernatural power */
+function drawSpirit(nearX) {
+
+    const sx = nearX - cameraX - 90;
+    const t = totalTime * .05;
+
+    ctx.save();
+    ctx.globalAlpha = .55 + Math.sin(t) * .15;
+
+    const grad = ctx.createRadialGradient(sx, 300, 5, sx, 300, 60);
+    grad.addColorStop(0, "rgba(150,60,200,.9)");
+    grad.addColorStop(1, "rgba(80,20,120,0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(sx, 300, 60, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(220,190,255,.8)";
+    ctx.beginPath();
+    ctx.arc(sx, 260, 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (let i = 0; i < 3; i++) {
+        const a = t + i * 2;
+        ctx.fillStyle = "rgba(180,120,220,.6)";
+        ctx.beginPath();
+        ctx.arc(sx + Math.cos(a) * 30, 300 + Math.sin(a) * 40, 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.restore();
+}
+
+
+/* SCENE 7 — other hares watching the Hare brag */
+function drawHareGroup(nearX) {
+
+    for (let i = 0; i < 3; i++) {
+        const gx = nearX - cameraX - 130 - i * 45;
+        const gy = 435;
+
+        ctx.fillStyle = "rgba(0,0,0,.35)";
+        ctx.fillRect(gx - 18, gy + 15, 36, 6);
+
+        ctx.fillStyle = "#7d4b2c";
+        ctx.fillRect(gx - 14, gy - 18, 28, 22);
+
+        ctx.fillStyle = "#8f5a34";
+        ctx.fillRect(gx - 6, gy - 34, 16, 18);
+
+        ctx.fillStyle = "#6b3d1f";
+        ctx.fillRect(gx - 4, gy - 50, 5, 18);
+        ctx.fillRect(gx + 4, gy - 54, 5, 20);
+    }
 }
 
 
@@ -1685,888 +990,298 @@ function drawFinishLine() {
 
 function updateCamera() {
 
-    cameraX +=
-        (
-            cameraTarget -
-            cameraX
-        ) * .075;
+    cameraX += (cameraTarget - cameraX) * .075;
 
-
-    if (
-        cameraShake > 0
-    ) {
-
-        cameraX +=
-            Math.random() *
-            cameraShake -
-            cameraShake / 2;
-
+    if (cameraShake > 0) {
+        cameraX += Math.random() * cameraShake - cameraShake / 2;
         cameraShake *= .85;
     }
 
+    cameraX = Math.max(0, Math.min(WORLD_WIDTH - 960, cameraX));
 
-    cameraX =
-        Math.max(
-            0,
-            Math.min(
-                WORLD_WIDTH - 960,
-                cameraX
-            )
-        );
+    camZoom += (camZoomTarget - camZoom) * .04;
 }
 
-
-function focusOn(
-    worldX
-) {
-
-    cameraTarget =
-        worldX -
-        480;
+function focusOn(worldX) {
+    cameraTarget = worldX - 480;
 }
 
 
 /* =========================================================
-   SCENE SETUP
+   SCENE CONTROL
 ========================================================= */
 
 function enterScene(index) {
-
     sceneIndex = index;
-
     sceneTimer = 0;
-
-    storyText.textContent =
-        scenes[index].text;
+    storyText.textContent = scenes[index].text;
+    camZoomTarget = scenes[index].zoom ? 1.16 : 1.0;
 }
 
 
 /* =========================================================
-   CONTINUOUS RACE
+   CONTINUOUS RACE / SCENE LOGIC
 ========================================================= */
 
 function updateRace() {
 
-    const type =
-        scenes[sceneIndex].type;
+    const type = scenes[sceneIndex].type;
 
-
-    /*
-    BEFORE THE RACE
-    */
-
-    if (
-        type === "opening"
-    ) {
-
-        skull.x = 320;
-
-        hare.x = 500;
-
+    if (type === "opening") {
+        skull.x = 320; hare.x = 500;
         focusOn(410);
-
-        skull.update(false);
-
-        hare.update(false);
-
         return;
     }
 
-
-    if (
-        type === "mock"
-    ) {
-
-        skull.x = 360;
-
-        hare.x = 510;
-
-        hare.lookBack = true;
-
+    if (type === "hare_taunt") {
+        skull.x = 360; hare.x = 510;
+        hareLookBack = false;
         focusOn(440);
-
         return;
     }
 
-
-    if (
-        type === "death_reply"
-    ) {
-
-        skull.x = 420;
-
-        hare.x = 535;
-
-        hare.lookBack = false;
-
+    if (type === "skull_reveal") {
+        skull.x = 420; hare.x = 535;
         focusOn(420);
-
         return;
     }
 
-
-    if (
-        type === "challenge"
-    ) {
-
-        skull.x = 430;
-
-        hare.x = 540;
-
+    if (type === "skull_challenge") {
+        skull.x = 430; hare.x = 540;
         focusOn(485);
-
         return;
     }
 
-
-    if (
-        type === "ready"
-    ) {
-
-        skull.x = 430;
-
-        hare.x = 545;
-
+    if (type === "hare_accept") {
+        skull.x = 430; hare.x = 545;
         focusOn(485);
-
         return;
     }
 
-
-    /*
-    RACE START
-    */
-
-    if (
-        type === "race_start"
-    ) {
-
-        skull.x += .95;
-
-        hare.x += 3.8;
-
-        skull.update(true);
-
-        hare.update(true);
-
-        focusOn(
-            (skull.x + hare.x) / 2
-        );
-
-        spawnDust(
-            hare.x,
-            hare.y,
-            2
-        );
-
+    if (type === "race_start") {
+        skull.x += .95; hare.x += 3.8;
+        skull.update(true); hare.update(true);
+        focusOn((skull.x + hare.x) / 2);
+        spawnDust(hare.x, hare.y, 2);
         return;
     }
 
-
-    /*
-    HARE GAINS A MASSIVE LEAD
-    */
-
-    if (
-        type === "hare_leads"
-    ) {
-
-        skull.x += 1.0;
-
-        hare.x += 3.2;
-
-        skull.update(true);
-
-        hare.update(true);
-
+    if (type === "hare_leads") {
+        skull.x += 1.0; hare.x += 3.2;
+        skull.update(true); hare.update(true);
         focusOn(hare.x);
-
-        hare.lookBack =
-            Math.sin(totalTime * .025) > .3;
-
-        if (
-            totalTime % 5 === 0
-        ) {
-
-            spawnDust(
-                hare.x,
-                hare.y,
-                2
-            );
-        }
-
+        hareLookBack = Math.sin(totalTime * .025) > .3;
+        if (totalTime % 5 === 0) spawnDust(hare.x, hare.y, 2);
         return;
     }
 
-
-    /*
-    SKULL CONTINUES.
-    THE HARE REMAINS AHEAD.
-    */
-
-    if (
-        type === "skull_chases"
-    ) {
-
-        skull.x += 1.15;
-
-        hare.x += 0.15;
-
-        skull.update(true);
-
-        hare.update(true);
-
+    if (type === "skull_chases") {
+        skull.x += 1.15; hare.x += 0.15;
+        skull.update(true); hare.update(true);
         focusOn(skull.x);
-
-        if (
-            totalTime % 9 === 0
-        ) {
-
-            spawnDust(
-                skull.x,
-                skull.y,
-                1
-            );
-        }
-
+        if (totalTime % 9 === 0) spawnDust(skull.x, skull.y, 1);
         return;
     }
 
-
-    /*
-    HARE CHECKS THE DISTANCE.
-    */
-
-    if (
-        type === "hare_far_ahead"
-    ) {
-
-        hare.x += .35;
-
-        skull.x += 1.2;
-
-        skull.update(true);
-
-        hare.update(true);
-
-        hare.lookBack = true;
-
+    if (type === "spirit_offer") {
+        hare.update(false);
         focusOn(hare.x);
-
         return;
     }
 
+    if (type === "graveyard_shortcut") {
+        skull.x += 1.1;
+        skull.update(true);
+        focusOn(skull.x);
+        if (totalTime % 6 === 0) spawnDust(skull.x, skull.y, 1);
+        return;
+    }
 
-    /*
-    THE SKULL CROSSES THE BRIDGE.
-    */
+    if (type === "hare_group_brag") {
+        hare.update(false);
+        focusOn(hare.x);
+        return;
+    }
 
-    if (
-        type === "bridge"
-    ) {
-
+    if (type === "bridge") {
         skull.x += 1.3;
-
         skull.update(true);
-
         focusOn(skull.x);
-
-        if (
-            totalTime % 7 === 0
-        ) {
-
-            spawnDust(
-                skull.x,
-                skull.y,
-                1
-            );
-        }
-
+        if (totalTime % 7 === 0) spawnDust(skull.x, skull.y, 1);
         return;
     }
 
-
-    /*
-    HARE IS ALREADY FAR BEYOND
-    THE BRIDGE.
-    */
-
-    if (
-        type === "hare_beyond_bridge"
-    ) {
-
+    if (type === "hare_beyond_bridge") {
         hare.x += .25;
-
         hare.update(true);
-
-        hare.lookBack = false;
-
+        hareLookBack = true;
         focusOn(hare.x);
-
         return;
     }
 
-
-    /*
-    HARE STOPS AND REFLECTS.
-    */
-
-    if (
-        type === "reflection"
-    ) {
-
+    if (type === "reflection") {
         hare.update(false);
-
         focusOn(hare.x);
-
         return;
     }
 
-
-    /*
-    HARE DECIDES TO REST.
-    */
-
-    if (
-        type === "decision_rest"
-    ) {
-
+    if (type === "decision_rest") {
         hare.update(false);
-
         focusOn(hare.x);
-
         return;
     }
 
-
-    /*
-    HARE FALLS ASLEEP.
-    */
-
-    if (
-        type === "sleep"
-    ) {
-
-        hare.sleeping = true;
-
+    if (type === "sleep") {
+        hareSleeping = true;
         focusOn(hare.x);
-
         return;
     }
 
-
-    /*
-    NOW THE CAMERA FOLLOWS
-    THE SKULL AGAIN.
-    */
-
-    if (
-        type === "skull_approaches"
-    ) {
-
+    if (type === "skull_approaches") {
         skull.x += 1.25;
-
         skull.update(true);
-
         focusOn(skull.x);
+        if (totalTime % 8 === 0) spawnDust(skull.x, skull.y, 1);
+        return;
+    }
 
-        if (
-            totalTime % 8 === 0
-        ) {
+    if (type === "skull_sees_hare") {
+        focusOn((skull.x + hare.x) / 2);
+        return;
+    }
 
-            spawnDust(
-                skull.x,
-                skull.y,
-                1
-            );
+    if (type === "choice") {
+        focusOn((skull.x + hare.x) / 2);
+        return;
+    }
+
+    if (type === "blade") {
+        bladeRaised = true;
+        focusOn((skull.x + hare.x) / 2);
+        return;
+    }
+
+    if (type === "strike") {
+        focusOn((skull.x + hare.x) / 2);
+        if (sceneTimer === 1) {
+            cameraShake = 8;
+            flashAlpha = 1;
+            spawnBurst((skull.x + hare.x) / 2, hare.y - 30);
         }
-
         return;
     }
 
-
-    /*
-    SKULL FINDS HARE.
-    */
-
-    if (
-        type === "skull_sees_hare"
-    ) {
-
-        focusOn(
-            (skull.x + hare.x) / 2
-        );
-
-        return;
-    }
-
-
-    /*
-    FINAL CONFRONTATION
-    */
-
-    if (
-        type === "choice"
-    ) {
-
-        focusOn(
-            (skull.x + hare.x) / 2
-        );
-
-        return;
-    }
-
-
-    /*
-    BLADE.
-    */
-
-    if (
-        type === "blade"
-    ) {
-
-        focusOn(
-            (skull.x + hare.x) / 2
-        );
-
-        return;
-    }
-
-
-    /*
-    STRIKE.
-    */
-
-    if (
-        type === "strike"
-    ) {
-
-        focusOn(
-            (skull.x + hare.x) / 2
-        );
-
-        deathFrame++;
-
-        cameraShake =
-            5;
-
-        return;
-    }
-
-
-    /*
-    AFTER THE STRIKE.
-    */
-
-    if (
-        type === "death"
-    ) {
-
+    if (type === "death") {
         hareDead = true;
-
+        bladeRaised = false;
         focusOn(skull.x);
-
         return;
     }
 
-
-    /*
-    SKULL FINISHES THE RACE.
-    */
-
-    if (
-        type === "victory"
-    ) {
-
+    if (type === "victory") {
         skull.x += 1.8;
-
         skull.update(true);
-
         focusOn(skull.x);
-
         return;
     }
 
-
-    /*
-    FINAL SHOT.
-    */
-
-    if (
-        type === "ending"
-    ) {
-
-        focusOn(
-            FINISH_LINE
-        );
-
+    if (type === "ending") {
+        focusOn(FINISH_LINE);
         return;
     }
 }
 
 
 /* =========================================================
-   DRAW DEATH
-========================================================= */
-
-function drawDeathScene() {
-
-    const center =
-        (skull.x + hare.x) / 2 -
-        cameraX;
-
-
-    if (
-        sceneIndex === 18
-    ) {
-
-        /*
-        Sword slash
-        */
-
-        ctx.strokeStyle =
-            "#eee";
-
-        ctx.lineWidth = 7;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            center + 110,
-            235
-        );
-
-        ctx.lineTo(
-            center - 50,
-            405
-        );
-
-        ctx.stroke();
-
-
-        /* red slash pixels */
-
-        ctx.fillStyle =
-            "#b00000";
-
-        for (
-            let i = 0;
-            i < 14;
-            i++
-        ) {
-
-            ctx.fillRect(
-                center - 30 +
-                Math.random() * 80,
-
-                340 +
-                Math.random() * 50,
-
-                4,
-                4
-            );
-        }
-    }
-
-
-    if (
-        sceneIndex >= 19
-    ) {
-
-        /*
-        DEAD BODY
-        */
-
-        ctx.save();
-
-        ctx.translate(
-            hare.x -
-            cameraX,
-            hare.y
-        );
-
-
-        ctx.fillStyle =
-            "#79401f";
-
-        ctx.fillRect(
-            -55,
-            -10,
-            90,
-            25
-        );
-
-
-        /* severed neck */
-
-        ctx.fillStyle =
-            "#720d0d";
-
-        ctx.fillRect(
-            18,
-            -15,
-            18,
-            15
-        );
-
-
-        /* detached head */
-
-        ctx.fillStyle =
-            "#a75a31";
-
-        ctx.fillRect(
-            45,
-            -42,
-            38,
-            29
-        );
-
-
-        /* ears */
-
-        ctx.fillStyle =
-            "#7d4023";
-
-        ctx.fillRect(
-            52,
-            -75,
-            11,
-            35
-        );
-
-        ctx.fillRect(
-            69,
-            -82,
-            11,
-            42
-        );
-
-
-        /* closed eye */
-
-        ctx.fillStyle =
-            "#160606";
-
-        ctx.fillRect(
-            69,
-            -29,
-            9,
-            3
-        );
-
-
-        /* blood */
-
-        ctx.fillStyle =
-            "#a50000";
-
-        ctx.fillRect(
-            30,
-            -2,
-            5,
-            22
-        );
-
-        ctx.fillRect(
-            20,
-            5,
-            4,
-            15
-        );
-
-        ctx.fillRect(
-            38,
-            8,
-            4,
-            12
-        );
-
-        ctx.restore();
-    }
-}
-
-
-/* =========================================================
-   DRAW CHARACTERS
+   DRAW CHARACTERS  (a speaking character is always visible)
 ========================================================= */
 
 function drawCharacters() {
 
-    const type =
-        scenes[sceneIndex].type;
+    const type = scenes[sceneIndex].type;
 
-
-    /*
-    PRE-RACE
-    */
-
-    if (
-        type === "opening" ||
-        type === "mock" ||
-        type === "death_reply" ||
-        type === "challenge" ||
-        type === "ready"
-    ) {
-
+    if (["opening","hare_taunt","skull_reveal","skull_challenge","hare_accept"].includes(type)) {
         skull.draw(1.35);
-
         hare.draw(1.35);
-
         return;
     }
 
-
-    /*
-    NORMAL RACE
-    */
-
-    if (
-        type === "race_start" ||
-        type === "hare_leads" ||
-        type === "skull_chases" ||
-        type === "hare_far_ahead"
-    ) {
-
+    if (["race_start","hare_leads","skull_chases"].includes(type)) {
         skull.draw(1.25);
-
         hare.draw(1.25);
-
         return;
     }
 
-
-    /*
-    BRIDGE
-    */
-
-    if (
-        type === "bridge"
-    ) {
-
-        skull.draw(1.45);
-
+    if (type === "spirit_offer") {
+        drawSpirit(hare.x);
+        hare.draw(1.5);
         return;
     }
 
-
-    /*
-    HARE'S REST.
-    ONLY HARE IS THE MAIN SHOT,
-    BUT SKULL IS STILL VISIBLE
-    IN THE DISTANCE WHEN APPROPRIATE.
-    */
-
-    if (
-        type === "hare_beyond_bridge" ||
-        type === "reflection" ||
-        type === "decision_rest"
-    ) {
-
-        hare.draw(1.55);
-
-        return;
-    }
-
-
-    if (
-        type === "sleep"
-    ) {
-
-        hare.draw(1.6);
-
-        return;
-    }
-
-
-    /*
-    APPROACH.
-    BOTH ARE VISIBLE.
-    */
-
-    if (
-        type === "skull_approaches"
-    ) {
-
+    if (type === "graveyard_shortcut") {
         skull.draw(1.4);
+        return;
+    }
 
-        /*
-        Sleeping hare appears in the
-        background if close enough.
-        */
+    if (type === "hare_group_brag") {
+        drawHareGroup(hare.x);
+        hare.draw(1.5);
+        return;
+    }
 
-        if (
-            Math.abs(
-                skull.x -
-                hare.x
-            ) < 260
-        ) {
+    if (type === "bridge") {
+        skull.draw(1.45);
+        return;
+    }
 
+    if (["hare_beyond_bridge","reflection","decision_rest"].includes(type)) {
+        hare.draw(1.5);
+        return;
+    }
+
+    if (type === "sleep") {
+        hare.draw(1.6);
+        return;
+    }
+
+    if (type === "skull_approaches") {
+        skull.draw(1.4);
+        if (Math.abs(skull.x - hare.x) < 260) {
             ctx.globalAlpha = .65;
-
             hare.draw(.9);
-
             ctx.globalAlpha = 1;
         }
-
         return;
     }
 
-
-    /*
-    FINAL CONFRONTATION.
-    */
-
-    if (
-        type === "skull_sees_hare" ||
-        type === "choice" ||
-        type === "blade"
-    ) {
-
+    if (["skull_sees_hare","choice"].includes(type)) {
         skull.draw(1.55);
-
         hare.draw(1.5);
-
         return;
     }
 
+    if (type === "blade") {
+        skull.draw(1.55, true);
+        hare.draw(1.5);
+        return;
+    }
 
-    /*
-    STRIKE / DEATH.
-    */
+    if (type === "strike") {
+        skull.draw(1.6, true);
+        hare.draw(1.6);
+        return;
+    }
 
-    if (
-        type === "strike" ||
-        type === "death"
-    ) {
-
+    if (type === "death") {
         skull.draw(1.6);
-
-        if (
-            type === "strike"
-        ) {
-
-            hare.draw(1.6);
-        }
-
+        hare.draw(1.6);
         return;
     }
 
-
-    /*
-    VICTORY
-    */
-
-    if (
-        type === "victory" ||
-        type === "ending"
-    ) {
-
+    if (["victory","ending"].includes(type)) {
         skull.draw(1.8);
-
         return;
     }
-
 
     skull.draw(1.3);
 }
@@ -2578,88 +1293,44 @@ function drawCharacters() {
 
 function render() {
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // --- zoomed cinematic layer (world + characters) ---
+    ctx.save();
+    ctx.translate(480, 300);
+    ctx.scale(camZoom, camZoom);
+    ctx.translate(-480, -300);
 
     drawBackground();
-
     drawCharacters();
-
-    drawDeathScene();
-
     drawParticles();
 
+    ctx.restore();
 
-    /*
-    Atmospheric fog
-    */
+    // --- foreground atmosphere, unaffected by zoom ---
+    drawAmbient();
 
-    const fog =
-        ctx.createLinearGradient(
-            0,
-            350,
-            0,
-            600
-        );
-
-    fog.addColorStop(
-        0,
-        "rgba(30,30,40,0)"
-    );
-
-    fog.addColorStop(
-        1,
-        "rgba(10,10,15,.35)"
-    );
-
+    // depth fog
+    const fog = ctx.createLinearGradient(0, 350, 0, 600);
+    fog.addColorStop(0, "rgba(30,30,40,0)");
+    fog.addColorStop(1, "rgba(10,10,15,.35)");
     ctx.fillStyle = fog;
+    ctx.fillRect(0, 300, 960, 300);
 
-    ctx.fillRect(
-        0,
-        300,
-        960,
-        300
-    );
+    // vignette
+    const vignette = ctx.createRadialGradient(480, 300, 200, 480, 300, 560);
+    vignette.addColorStop(0, "rgba(0,0,0,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,.7)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, 960, 600);
 
-
-    /*
-    Vignette
-    */
-
-    const vignette =
-        ctx.createRadialGradient(
-            480,
-            300,
-            200,
-            480,
-            300,
-            560
-        );
-
-    vignette.addColorStop(
-        0,
-        "rgba(0,0,0,0)"
-    );
-
-    vignette.addColorStop(
-        1,
-        "rgba(0,0,0,.7)"
-    );
-
-    ctx.fillStyle =
-        vignette;
-
-    ctx.fillRect(
-        0,
-        0,
-        960,
-        600
-    );
+    // impact flash
+    if (flashAlpha > 0) {
+        flashEl.style.opacity = flashAlpha;
+        flashAlpha -= .06;
+    } else {
+        flashEl.style.opacity = 0;
+    }
 }
 
 
@@ -2672,187 +1343,82 @@ function gameLoop() {
     if (gameStarted) {
 
         totalTime++;
-
         sceneTimer++;
 
         updateRace();
-
         updateCamera();
-
         updateParticles();
+        updateAmbient();
 
-
-        /*
-        Scene progression.
-        */
-
-        if (
-            sceneTimer >=
-            scenes[sceneIndex].duration
-        ) {
-
-            if (
-                sceneIndex <
-                scenes.length - 1
-            ) {
-
-                sceneIndex++;
-
-                sceneTimer = 0;
-
-                storyText.textContent =
-                    scenes[sceneIndex].text;
+        if (sceneTimer >= scenes[sceneIndex].duration) {
+            if (sceneIndex < scenes.length - 1) {
+                enterScene(sceneIndex + 1);
             }
         }
 
-
-        /*
-        Make sure the sleeping state
-        remains active.
-        */
-
-        if (
-            scenes[sceneIndex].type ===
-            "sleep"
-        ) {
-
-            hare.sleeping = true;
-        }
-
-
-        if (
-            scenes[sceneIndex].type !==
-            "sleep" &&
-            sceneIndex < 14
-        ) {
-
-            hare.sleeping = false;
-        }
-
-
-        /*
-        Death effect.
-        */
-
-        if (
-            scenes[sceneIndex].type ===
-            "strike"
-        ) {
-
-            if (
-                totalTime % 2 === 0
-            ) {
-
-                cameraShake = 7;
-            }
-        }
-
-
-        /*
-        End.
-        */
-
-        if (
-            sceneIndex ===
-            scenes.length - 1 &&
-            sceneTimer > 320 &&
-            !endingShown
-        ) {
-
+        if (sceneIndex === scenes.length - 1 && sceneTimer > 380 && !endingShown) {
             endingShown = true;
-
-            moral.style.display =
-                "block";
-
+            moral.style.display = "block";
             gameStarted = false;
         }
     }
 
-
     render();
-
-    requestAnimationFrame(
-        gameLoop
-    );
+    requestAnimationFrame(gameLoop);
 }
 
 
 /* =========================================================
-   START
+   START / RESTART
 ========================================================= */
 
 function startGame() {
+    if (gameStarted) return;
 
-    if (gameStarted)
-        return;
-
-    titleScreen.style.display =
-        "none";
-
-    moral.style.display =
-        "none";
+    titleScreen.style.display = "none";
+    moral.style.display = "none";
 
     gameStarted = true;
-
     sceneIndex = 0;
-
     sceneTimer = 0;
-
     totalTime = 0;
-
     cameraX = 0;
-
     cameraTarget = 0;
+    camZoom = 1;
+    camZoomTarget = 1;
 
     hareDead = false;
-
+    hareSleeping = false;
+    hareLookBack = false;
+    bladeRaised = false;
+    flashAlpha = 0;
     endingShown = false;
 
-    deathFrame = 0;
-
     skull.x = 320;
-
     hare.x = 500;
 
-    hare.sleeping = false;
+    particles = [];
+    initAmbient();
 
-    hare.lookBack = false;
-
-    storyText.textContent =
-        scenes[0].text;
+    storyText.textContent = scenes[0].text;
 }
 
-
 function restartGame() {
-
-    moral.style.display =
-        "none";
-
-    titleScreen.style.display =
-        "flex";
-
+    moral.style.display = "none";
+    titleScreen.style.display = "flex";
     gameStarted = false;
 }
 
-
-titleScreen.addEventListener(
-    "click",
-    startGame
-);
-
-moral.addEventListener(
-    "click",
-    restartGame
-);
+titleScreen.addEventListener("click", startGame);
+moral.addEventListener("click", restartGame);
 
 
 /* =========================================================
    INITIAL FRAME
 ========================================================= */
 
-storyText.textContent =
-    scenes[0].text;
-
+initAmbient();
+storyText.textContent = scenes[0].text;
 gameLoop();
 
 </script>
